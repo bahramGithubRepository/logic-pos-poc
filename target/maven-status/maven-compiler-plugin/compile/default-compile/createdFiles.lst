@@ -1,0 +1,8 @@
+com\logicpos\Product.class
+com\logicpos\ProductCategory.class
+com\logicpos\UserRole.class
+com\logicpos\InMemoryRepository.class
+com\logicpos\PricingService$1.class
+com\logicpos\Main.class
+com\logicpos\PricingService.class
+com\logicpos\Receipt.class
