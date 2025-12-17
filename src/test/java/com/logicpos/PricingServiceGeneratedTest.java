@@ -21,7 +21,7 @@ public class PricingServiceGeneratedTest {
     }
 
     @Test
-    void testStandardCustomerSingleFoodItemTaxExemption() {
+    void testStandardCustomerSingleFoodItem() {
         List<Product> cart = new ArrayList<>();
         cart.add(repository.getProduct("Apple"));
 
@@ -34,141 +34,119 @@ public class PricingServiceGeneratedTest {
     }
 
     @Test
-    void testStandardCustomerSingleElectronicsItemTaxApplication() {
+    void testStandardCustomerSingleElectronicsItem() {
         List<Product> cart = new ArrayList<>();
-        cart.add(repository.getProduct("Laptop"));
+        cart.add(repository.getProduct("Mouse"));
 
         Receipt receipt = pricingService.calculate(cart, UserRole.STANDARD);
 
-        assertEquals(1000.00, receipt.getSubtotal(), 0.001);
-        assertEquals(150.00, receipt.getTaxAmount(), 0.001);
+        assertEquals(25.00, receipt.getSubtotal(), 0.001);
+        assertEquals(3.75, receipt.getTaxAmount(), 0.001);
         assertEquals(0.00, receipt.getDiscountAmount(), 0.001);
-        assertEquals(1150.00, receipt.getGrandTotal(), 0.001);
+        assertEquals(28.75, receipt.getGrandTotal(), 0.001);
     }
 
     @Test
-    void testVeteranCustomerSingleFoodItemVeteranDiscountOnly() {
+    void testVeteranCustomerSingleElectronicsItem() {
+        List<Product> cart = new ArrayList<>();
+        cart.add(repository.getProduct("Mouse"));
+
+        Receipt receipt = pricingService.calculate(cart, UserRole.VETERAN);
+
+        assertEquals(25.00, receipt.getSubtotal(), 0.001);
+        assertEquals(3.75, receipt.getTaxAmount(), 0.001);
+        assertEquals(2.50, receipt.getDiscountAmount(), 0.001);
+        assertEquals(26.25, receipt.getGrandTotal(), 0.001);
+    }
+
+    @Test
+    void testStandardCustomerExactlyFiveMixedItems() {
         List<Product> cart = new ArrayList<>();
         cart.add(repository.getProduct("Apple"));
+        cart.add(repository.getProduct("Apple"));
+        cart.add(repository.getProduct("Apple"));
+        cart.add(repository.getProduct("Mouse"));
+        cart.add(repository.getProduct("Mouse"));
 
-        Receipt receipt = pricingService.calculate(cart, UserRole.VETERAN);
-
-        assertEquals(0.50, receipt.getSubtotal(), 0.001);
-        assertEquals(0.00, receipt.getTaxAmount(), 0.001);
-        assertEquals(0.05, receipt.getDiscountAmount(), 0.001);
-        assertEquals(0.45, receipt.getGrandTotal(), 0.001);
-    }
-
-    @Test
-    void testVeteranCustomerSingleElectronicsItemVeteranDiscountTax() {
-        List<Product> cart = new ArrayList<>();
-        cart.add(repository.getProduct("Laptop"));
-
-        Receipt receipt = pricingService.calculate(cart, UserRole.VETERAN);
-
-        assertEquals(1000.00, receipt.getSubtotal(), 0.001);
-        assertEquals(150.00, receipt.getTaxAmount(), 0.001);
-        assertEquals(100.00, receipt.getDiscountAmount(), 0.001);
-        assertEquals(1050.00, receipt.getGrandTotal(), 0.001);
-    }
-
-    @Test
-    void testStandardCustomerExactly5ItemsNoVolumeDiscount() {
-        List<Product> cart = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            cart.add(repository.getProduct("Laptop"));
-        }
 
         Receipt receipt = pricingService.calculate(cart, UserRole.STANDARD);
 
-        assertEquals(5000.00, receipt.getSubtotal(), 0.001);
-        assertEquals(750.00, receipt.getTaxAmount(), 0.001);
+        assertEquals(51.50, receipt.getSubtotal(), 0.001);
+        assertEquals(7.50, receipt.getTaxAmount(), 0.001);
         assertEquals(0.00, receipt.getDiscountAmount(), 0.001);
-        assertEquals(5750.00, receipt.getGrandTotal(), 0.001);
+        assertEquals(59.00, receipt.getGrandTotal(), 0.001);
     }
 
     @Test
-    void testStandardCustomerExactly6ItemsVolumeDiscountApplied() {
+    void testStandardCustomerExactlySixMixedItems() {
         List<Product> cart = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            cart.add(repository.getProduct("Apple"));
-        }
+        cart.add(repository.getProduct("Apple"));
+        cart.add(repository.getProduct("Apple"));
+        cart.add(repository.getProduct("Apple"));
+        cart.add(repository.getProduct("Mouse"));
+        cart.add(repository.getProduct("Mouse"));
+        cart.add(repository.getProduct("Mouse"));
 
         Receipt receipt = pricingService.calculate(cart, UserRole.STANDARD);
 
-        assertEquals(3.00, receipt.getSubtotal(), 0.001);
-        assertEquals(0.00, receipt.getTaxAmount(), 0.001);
-        assertEquals(0.15, receipt.getDiscountAmount(), 0.001);
-        assertEquals(2.85, receipt.getGrandTotal(), 0.001);
+        assertEquals(76.50, receipt.getSubtotal(), 0.001);
+        assertEquals(11.25, receipt.getTaxAmount(), 0.001);
+        assertEquals(3.825, receipt.getDiscountAmount(), 0.001);
+        assertEquals(83.925, receipt.getGrandTotal(), 0.001);
     }
 
     @Test
-    void testVeteranCustomerExactly5ItemsVeteranDiscountOnlyNoVolume() {
+    void testVeteranCustomerSixMixedItemsStackingDiscounts() {
         List<Product> cart = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            cart.add(repository.getProduct("Laptop"));
-        }
+        cart.add(repository.getProduct("Apple"));
+        cart.add(repository.getProduct("Apple"));
+        cart.add(repository.getProduct("Apple"));
+        cart.add(repository.getProduct("Mouse"));
+        cart.add(repository.getProduct("Mouse"));
+        cart.add(repository.getProduct("Mouse"));
 
         Receipt receipt = pricingService.calculate(cart, UserRole.VETERAN);
 
-        assertEquals(5000.00, receipt.getSubtotal(), 0.001);
-        assertEquals(750.00, receipt.getTaxAmount(), 0.001);
-        assertEquals(500.00, receipt.getDiscountAmount(), 0.001);
-        assertEquals(5200.00, receipt.getGrandTotal(), 0.001);
+        double subtotal = 76.50;
+        double taxAmount = 11.25;
+        double expectedDiscount = subtotal * 0.15;
+        double expectedGrandTotal = (subtotal + taxAmount) - expectedDiscount;
+
+        assertEquals(76.50, receipt.getSubtotal(), 0.001);
+        assertEquals(11.25, receipt.getTaxAmount(), 0.001);
+        assertEquals(11.475, receipt.getDiscountAmount(), 0.001);
+        assertEquals(76.275, receipt.getGrandTotal(), 0.001);
     }
 
     @Test
-    void testCriticalVeteranCustomer6MixedItemsStackedDiscountsVeteranVolume() {
+    void testVeteranCustomerExactlyFiveMixedItems() {
         List<Product> cart = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            cart.add(repository.getProduct("Apple"));
-        }
-        for (int i = 0; i < 3; i++) {
-            cart.add(repository.getProduct("Laptop"));
-        }
+        cart.add(repository.getProduct("Apple"));
+        cart.add(repository.getProduct("Apple"));
+        cart.add(repository.getProduct("Apple"));
+        cart.add(repository.getProduct("Mouse"));
+        cart.add(repository.getProduct("Mouse"));
 
         Receipt receipt = pricingService.calculate(cart, UserRole.VETERAN);
-        double expectedGrandTotal = (30 + 300) * 0.85 + (300 * 0.15);
 
-        assertEquals(330.00, receipt.getSubtotal(), 0.001);
-        assertEquals(45.00, receipt.getTaxAmount(), 0.001);
-        assertEquals(49.50, receipt.getDiscountAmount(), 0.001);
-        assertEquals(325.50, receipt.getGrandTotal(), 0.001);
+        assertEquals(51.50, receipt.getSubtotal(), 0.001);
+        assertEquals(7.50, receipt.getTaxAmount(), 0.001);
+        assertEquals(5.15, receipt.getDiscountAmount(), 0.001);
+        assertEquals(53.85, receipt.getGrandTotal(), 0.001);
     }
 
     @Test
-    void testStandardCustomerMixedCategoriesNoDiscounts() {
+    void testStandardCustomerMixedCartTaxationOnly() {
         List<Product> cart = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
-            cart.add(repository.getProduct("Apple"));
-        }
-        for (int i = 0; i < 2; i++) {
-            cart.add(repository.getProduct("Laptop"));
-        }
+        cart.add(repository.getProduct("Apple"));
+        cart.add(repository.getProduct("Apple"));
+        cart.add(repository.getProduct("Mouse"));
 
         Receipt receipt = pricingService.calculate(cart, UserRole.STANDARD);
 
-        assertEquals(2020.00, receipt.getSubtotal(), 0.001);
-        assertEquals(300.00, receipt.getTaxAmount(), 0.001);
+        assertEquals(26.00, receipt.getSubtotal(), 0.001);
+        assertEquals(3.75, receipt.getTaxAmount(), 0.001);
         assertEquals(0.00, receipt.getDiscountAmount(), 0.001);
-        assertEquals(2320.00, receipt.getGrandTotal(), 0.001);
-    }
-
-    @Test
-    void testVeteranCustomerMixedCategoriesVeteranDiscountOnly() {
-        List<Product> cart = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
-            cart.add(repository.getProduct("Apple"));
-        }
-        for (int i = 0; i < 2; i++) {
-            cart.add(repository.getProduct("Laptop"));
-        }
-
-        Receipt receipt = pricingService.calculate(cart, UserRole.VETERAN);
-
-        assertEquals(2020.00, receipt.getSubtotal(), 0.001);
-        assertEquals(300.00, receipt.getTaxAmount(), 0.001);
-        assertEquals(202.00, receipt.getDiscountAmount(), 0.001);
-        assertEquals(2118.00, receipt.getGrandTotal(), 0.001);
+        assertEquals(29.75, receipt.getGrandTotal(), 0.001);
     }
 }
