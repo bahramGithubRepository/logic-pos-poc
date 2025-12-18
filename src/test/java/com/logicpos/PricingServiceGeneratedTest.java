@@ -1,42 +1,166 @@
+import com.logicpos.*;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PricingServiceGeneratedTest {
 
     @Test
-    void testNonVeteranScenarios() {
-        assertEquals(30.00, calculateGrandTotal("NON_VETERAN", 3, 10.0, 0, 0.0), "NonVeteran_NoDiscount_FoodOnly_NoTax");
-        assertEquals(345.00, calculateGrandTotal("NON_VETERAN", 0, 0.0, 3, 100.0), "NonVeteran_NoDiscount_ElectronicsOnly_WithTax");
-        assertEquals(250.00, calculateGrandTotal("NON_VETERAN", 2, 10.0, 2, 100.0), "NonVeteran_NoDiscount_MixedItems_PartialTax");
-        assertEquals(57.00, calculateGrandTotal("NON_VETERAN", 6, 10.0, 0, 0.0), "NonVeteran_VolumeDiscountOnly_FoodOnly_NoTax");
-        assertEquals(660.00, calculateGrandTotal("NON_VETERAN", 0, 0.0, 6, 100.0), "NonVeteran_VolumeDiscountOnly_ElectronicsOnly_WithTax");
-        assertEquals(358.50, calculateGrandTotal("NON_VETERAN", 3, 10.0, 3, 100.0), "NonVeteran_VolumeDiscountOnly_MixedItems_PartialTax");
+    void testNo_Discount_Food_Only() {
+        PricingService service = new PricingService();
+        List<Product> cart = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            cart.add(new Product(String.valueOf(i), "Food", ProductCategory.FOOD, 10.00));
+        }
+        UserRole role = UserRole.STANDARD;
+        Receipt receipt = service.calculate(cart, role);
+        assertEquals(30.00, receipt.getGrandTotal());
     }
 
     @Test
-    void testVeteranScenarios() {
-        assertEquals(27.00, calculateGrandTotal("VETERAN", 3, 10.0, 0, 0.0), "Veteran_VeteranDiscountOnly_FoodOnly_NoTax");
-        assertEquals(315.00, calculateGrandTotal("VETERAN", 0, 0.0, 3, 100.0), "Veteran_VeteranDiscountOnly_ElectronicsOnly_WithTax");
-        assertEquals(228.00, calculateGrandTotal("VETERAN", 2, 10.0, 2, 100.0), "Veteran_VeteranDiscountOnly_MixedItems_PartialTax");
-        assertEquals(51.00, calculateGrandTotal("VETERAN", 6, 10.0, 0, 0.0), "Veteran_StackedDiscounts_FoodOnly_NoTax");
-        assertEquals(600.00, calculateGrandTotal("VETERAN", 0, 0.0, 6, 100.0), "Veteran_StackedDiscounts_ElectronicsOnly_WithTax");
-        assertEquals(325.50, calculateGrandTotal("VETERAN", 3, 10.0, 3, 100.0), "Veteran_StackedDiscounts_MixedItems_PartialTax");
+    void testNo_Discount_Electronics_Only() {
+        PricingService service = new PricingService();
+        List<Product> cart = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            cart.add(new Product(String.valueOf(i), "Electronics", ProductCategory.ELECTRONICS, 100.00));
+        }
+        UserRole role = UserRole.STANDARD;
+        Receipt receipt = service.calculate(cart, role);
+        assertEquals(345.00, receipt.getGrandTotal());
     }
 
-    private double calculateGrandTotal(String userType, int foodItems, double foodPrice, int electronicsItems, double electronicsPrice) {
-        double foodSubtotal = foodItems * foodPrice;
-        double electronicsSubtotal = electronicsItems * electronicsPrice;
-        double subtotal = foodSubtotal + electronicsSubtotal;
-        double tax = electronicsSubtotal * 0.15;
-
-        double discount = 0.0;
-        if (userType.equals("VETERAN")) {
-            discount += subtotal * 0.10;
+    @Test
+    void testNo_Discount_Mixed() {
+        PricingService service = new PricingService();
+        List<Product> cart = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            cart.add(new Product(String.valueOf(i), "Food", ProductCategory.FOOD, 10.00));
         }
-        if ((foodItems + electronicsItems) > 5) {
-            discount += subtotal * 0.05;
+        for (int i = 0; i < 2; i++) {
+            cart.add(new Product(String.valueOf(i), "Electronics", ProductCategory.ELECTRONICS, 100.00));
         }
+        UserRole role = UserRole.STANDARD;
+        Receipt receipt = service.calculate(cart, role);
+        assertEquals(250.00, receipt.getGrandTotal());
+    }
 
-        return subtotal - discount + tax;
+    @Test
+    void testVeteran_Discount_Food_Only() {
+        PricingService service = new PricingService();
+        List<Product> cart = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            cart.add(new Product(String.valueOf(i), "Food", ProductCategory.FOOD, 10.00));
+        }
+        UserRole role = UserRole.VETERAN;
+        Receipt receipt = service.calculate(cart, role);
+        assertEquals(27.00, receipt.getGrandTotal());
+    }
+
+    @Test
+    void testVeteran_Discount_Electronics_Only() {
+        PricingService service = new PricingService();
+        List<Product> cart = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            cart.add(new Product(String.valueOf(i), "Electronics", ProductCategory.ELECTRONICS, 100.00));
+        }
+        UserRole role = UserRole.VETERAN;
+        Receipt receipt = service.calculate(cart, role);
+        assertEquals(315.00, receipt.getGrandTotal());
+    }
+
+    @Test
+    void testVeteran_Discount_Mixed() {
+        PricingService service = new PricingService();
+        List<Product> cart = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            cart.add(new Product(String.valueOf(i), "Food", ProductCategory.FOOD, 10.00));
+        }
+        for (int i = 0; i < 2; i++) {
+            cart.add(new Product(String.valueOf(i), "Electronics", ProductCategory.ELECTRONICS, 100.00));
+        }
+        UserRole role = UserRole.VETERAN;
+        Receipt receipt = service.calculate(cart, role);
+        assertEquals(228.00, receipt.getGrandTotal());
+    }
+
+    @Test
+    void testVolume_Discount_Food_Only() {
+        PricingService service = new PricingService();
+        List<Product> cart = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            cart.add(new Product(String.valueOf(i), "Food", ProductCategory.FOOD, 10.00));
+        }
+        UserRole role = UserRole.STANDARD;
+        Receipt receipt = service.calculate(cart, role);
+        assertEquals(57.00, receipt.getGrandTotal());
+    }
+
+    @Test
+    void testVolume_Discount_Electronics_Only() {
+        PricingService service = new PricingService();
+        List<Product> cart = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            cart.add(new Product(String.valueOf(i), "Electronics", ProductCategory.ELECTRONICS, 100.00));
+        }
+        UserRole role = UserRole.STANDARD;
+        Receipt receipt = service.calculate(cart, role);
+        assertEquals(660.00, receipt.getGrandTotal());
+    }
+
+    @Test
+    void testVolume_Discount_Mixed() {
+        PricingService service = new PricingService();
+        List<Product> cart = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            cart.add(new Product(String.valueOf(i), "Food", ProductCategory.FOOD, 10.00));
+        }
+        for (int i = 0; i < 3; i++) {
+            cart.add(new Product(String.valueOf(i), "Electronics", ProductCategory.ELECTRONICS, 100.00));
+        }
+        UserRole role = UserRole.STANDARD;
+        Receipt receipt = service.calculate(cart, role);
+        assertEquals(358.50, receipt.getGrandTotal());
+    }
+
+    @Test
+    void testStacking_Discount_Food_Only() {
+        PricingService service = new PricingService();
+        List<Product> cart = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            cart.add(new Product(String.valueOf(i), "Food", ProductCategory.FOOD, 10.00));
+        }
+        UserRole role = UserRole.VETERAN;
+        Receipt receipt = service.calculate(cart, role);
+        assertEquals(51.00, receipt.getGrandTotal());
+    }
+
+    @Test
+    void testStacking_Discount_Electronics_Only() {
+        PricingService service = new PricingService();
+        List<Product> cart = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            cart.add(new Product(String.valueOf(i), "Electronics", ProductCategory.ELECTRONICS, 100.00));
+        }
+        UserRole role = UserRole.VETERAN;
+        Receipt receipt = service.calculate(cart, role);
+        assertEquals(600.00, receipt.getGrandTotal());
+    }
+
+    @Test
+    void testStacking_Discount_Mixed() {
+        PricingService service = new PricingService();
+        List<Product> cart = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            cart.add(new Product(String.valueOf(i), "Food", ProductCategory.FOOD, 10.00));
+        }
+        for (int i = 0; i < 3; i++) {
+            cart.add(new Product(String.valueOf(i), "Electronics", ProductCategory.ELECTRONICS, 100.00));
+        }
+        UserRole role = UserRole.VETERAN;
+        Receipt receipt = service.calculate(cart, role);
+        assertEquals(325.50, receipt.getGrandTotal());
     }
 }
