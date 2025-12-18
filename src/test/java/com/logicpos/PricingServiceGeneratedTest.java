@@ -1,6 +1,4 @@
-package com.logicpos;
-
-import org.junit.jupiter.api.BeforeEach;
+import com.logicpos.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -8,253 +6,212 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class PricingServiceGeneratedTest {
+public class PricingServiceGeneratedTest {
 
-    private PricingService pricingService;
-    private InMemoryRepository repository;
+    @Test
+    void testStandard_User_Mixed_Cart_No_Discounts() {
+        List<Product> items = new ArrayList<>();
+        items.add(new Product("1", "Food1", ProductCategory.FOOD, 10.00));
+        items.add(new Product("2", "Electronics1", ProductCategory.ELECTRONICS, 50.00));
+        items.add(new Product("3", "Luxury1", ProductCategory.LUXURY, 100.00));
+        UserRole user_role = UserRole.STANDARD;
 
-    @BeforeEach
-    void setUp() {
-        pricingService = new PricingService();
-        repository = new InMemoryRepository();
-        repository.seed();
+        Receipt receipt = new PricingService().calculate(items, user_role);
+
+        assertEquals(160.00, receipt.getSubtotal(), 0.001);
+        assertEquals(20.00, receipt.getTaxAmount(), 0.001);
+        assertEquals(0.00, receipt.getDiscountAmount(), 0.001);
+        assertEquals(180.00, receipt.getGrandTotal(), 0.001);
     }
 
     @Test
-    void Standard_PureFood_NoVolume() {
+    void testStandard_User_Volume_Discount_6_Items() {
         List<Product> items = new ArrayList<>();
-        items.add(new Product("11", "Item1", ProductCategory.FOOD, 10.00));
-        UserRole userRole = UserRole.STANDARD;
+        items.add(new Product("1", "Food1", ProductCategory.FOOD, 10.00));
+        items.add(new Product("2", "Electronics1", ProductCategory.ELECTRONICS, 50.00));
+        items.add(new Product("3", "Luxury1", ProductCategory.LUXURY, 100.00));
+        items.add(new Product("4", "Food2", ProductCategory.FOOD, 10.00));
+        items.add(new Product("5", "Electronics2", ProductCategory.ELECTRONICS, 50.00));
+        items.add(new Product("6", "Luxury2", ProductCategory.LUXURY, 100.00));
+        UserRole user_role = UserRole.STANDARD;
 
-        Receipt receipt = pricingService.calculate(items, userRole);
+        Receipt receipt = new PricingService().calculate(items, user_role);
 
-        assertEquals(10.00, receipt.getSubtotal(), 0.001);
+        assertEquals(320.00, receipt.getSubtotal(), 0.001);
+        assertEquals(40.00, receipt.getTaxAmount(), 0.001);
+        assertEquals(16.00, receipt.getDiscountAmount(), 0.001);
+        assertEquals(344.00, receipt.getGrandTotal(), 0.001);
+    }
+
+    @Test
+    void testStandard_User_Volume_Boundary_5_Items() {
+        List<Product> items = new ArrayList<>();
+        items.add(new Product("1", "Food1", ProductCategory.FOOD, 10.00));
+        items.add(new Product("2", "Electronics1", ProductCategory.ELECTRONICS, 50.00));
+        items.add(new Product("3", "Luxury1", ProductCategory.LUXURY, 100.00));
+        items.add(new Product("4", "Food2", ProductCategory.FOOD, 10.00));
+        items.add(new Product("5", "Electronics2", ProductCategory.ELECTRONICS, 50.00));
+        UserRole user_role = UserRole.STANDARD;
+
+        Receipt receipt = new PricingService().calculate(items, user_role);
+
+        assertEquals(220.00, receipt.getSubtotal(), 0.001);
+        assertEquals(25.00, receipt.getTaxAmount(), 0.001);
+        assertEquals(0.00, receipt.getDiscountAmount(), 0.001);
+        assertEquals(245.00, receipt.getGrandTotal(), 0.001);
+    }
+
+    @Test
+    void testVeteran_User_Role_Discount_No_Volume() {
+        List<Product> items = new ArrayList<>();
+        items.add(new Product("1", "Food1", ProductCategory.FOOD, 10.00));
+        items.add(new Product("2", "Electronics1", ProductCategory.ELECTRONICS, 50.00));
+        items.add(new Product("3", "Luxury1", ProductCategory.LUXURY, 100.00));
+        UserRole user_role = UserRole.VETERAN;
+
+        Receipt receipt = new PricingService().calculate(items, user_role);
+
+        assertEquals(160.00, receipt.getSubtotal(), 0.001);
+        assertEquals(20.00, receipt.getTaxAmount(), 0.001);
+        assertEquals(16.00, receipt.getDiscountAmount(), 0.001);
+        assertEquals(164.00, receipt.getGrandTotal(), 0.001);
+    }
+
+    @Test
+    void testVeteran_User_Volume_Stacking_Capped_15_Percent() {
+        List<Product> items = new ArrayList<>();
+        items.add(new Product("1", "Food1", ProductCategory.FOOD, 10.00));
+        items.add(new Product("2", "Electronics1", ProductCategory.ELECTRONICS, 50.00));
+        items.add(new Product("3", "Luxury1", ProductCategory.LUXURY, 100.00));
+        items.add(new Product("4", "Food2", ProductCategory.FOOD, 10.00));
+        items.add(new Product("5", "Electronics2", ProductCategory.ELECTRONICS, 50.00));
+        items.add(new Product("6", "Luxury2", ProductCategory.LUXURY, 100.00));
+        UserRole user_role = UserRole.VETERAN;
+
+        Receipt receipt = new PricingService().calculate(items, user_role);
+
+        assertEquals(320.00, receipt.getSubtotal(), 0.001);
+        assertEquals(40.00, receipt.getTaxAmount(), 0.001);
+        assertEquals(48.00, receipt.getDiscountAmount(), 0.001);
+        assertEquals(312.00, receipt.getGrandTotal(), 0.001);
+    }
+
+    @Test
+    void testEmployee_User_Role_Discount_No_Volume() {
+        List<Product> items = new ArrayList<>();
+        items.add(new Product("1", "Food1", ProductCategory.FOOD, 10.00));
+        items.add(new Product("2", "Electronics1", ProductCategory.ELECTRONICS, 50.00));
+        items.add(new Product("3", "Luxury1", ProductCategory.LUXURY, 100.00));
+        UserRole user_role = UserRole.EMPLOYEE;
+
+        Receipt receipt = new PricingService().calculate(items, user_role);
+
+        assertEquals(160.00, receipt.getSubtotal(), 0.001);
+        assertEquals(20.00, receipt.getTaxAmount(), 0.001);
+        assertEquals(32.00, receipt.getDiscountAmount(), 0.001);
+        assertEquals(148.00, receipt.getGrandTotal(), 0.001);
+    }
+
+    @Test
+    void testEmployee_User_Volume_Stacking_MAX_20_Percent() {
+        List<Product> items = new ArrayList<>();
+        items.add(new Product("1", "Food1", ProductCategory.FOOD, 10.00));
+        items.add(new Product("2", "Electronics1", ProductCategory.ELECTRONICS, 50.00));
+        items.add(new Product("3", "Luxury1", ProductCategory.LUXURY, 100.00));
+        items.add(new Product("4", "Food2", ProductCategory.FOOD, 10.00));
+        items.add(new Product("5", "Electronics2", ProductCategory.ELECTRONICS, 50.00));
+        items.add(new Product("6", "Luxury2", ProductCategory.LUXURY, 100.00));
+        UserRole user_role = UserRole.EMPLOYEE;
+
+        Receipt receipt = new PricingService().calculate(items, user_role);
+
+        assertEquals(320.00, receipt.getSubtotal(), 0.001);
+        assertEquals(40.00, receipt.getTaxAmount(), 0.001);
+        assertEquals(64.00, receipt.getDiscountAmount(), 0.001);
+        assertEquals(296.00, receipt.getGrandTotal(), 0.001);
+    }
+
+    @Test
+    void testPure_Food_Cart_No_Tax() {
+        List<Product> items = new ArrayList<>();
+        items.add(new Product("1", "Food1", ProductCategory.FOOD, 10.00));
+        items.add(new Product("2", "Food2", ProductCategory.FOOD, 15.00));
+        items.add(new Product("3", "Food3", ProductCategory.FOOD, 5.00));
+        UserRole user_role = UserRole.STANDARD;
+
+        Receipt receipt = new PricingService().calculate(items, user_role);
+
+        assertEquals(30.00, receipt.getSubtotal(), 0.001);
         assertEquals(0.00, receipt.getTaxAmount(), 0.001);
         assertEquals(0.00, receipt.getDiscountAmount(), 0.001);
-        assertEquals(10.00, receipt.getGrandTotal(), 0.001);
+        assertEquals(30.00, receipt.getGrandTotal(), 0.001);
     }
 
     @Test
-    void Standard_PureElectronics_NoVolume() {
+    void testPure_Electronics_Cart_10_Percent_Tax() {
         List<Product> items = new ArrayList<>();
-        items.add(new Product("12", "Item2", ProductCategory.ELECTRONICS, 100.00));
-        UserRole userRole = UserRole.STANDARD;
+        items.add(new Product("1", "Electronics1", ProductCategory.ELECTRONICS, 50.00));
+        items.add(new Product("2", "Electronics2", ProductCategory.ELECTRONICS, 75.00));
+        UserRole user_role = UserRole.STANDARD;
 
-        Receipt receipt = pricingService.calculate(items, userRole);
+        Receipt receipt = new PricingService().calculate(items, user_role);
 
-        assertEquals(100.00, receipt.getSubtotal(), 0.001);
-        assertEquals(10.00, receipt.getTaxAmount(), 0.001);
+        assertEquals(125.00, receipt.getSubtotal(), 0.001);
+        assertEquals(12.50, receipt.getTaxAmount(), 0.001);
         assertEquals(0.00, receipt.getDiscountAmount(), 0.001);
-        assertEquals(110.00, receipt.getGrandTotal(), 0.001);
+        assertEquals(137.50, receipt.getGrandTotal(), 0.001);
     }
 
     @Test
-    void Standard_PureLuxury_NoVolume() {
+    void testPure_Luxury_Cart_15_Percent_Tax() {
         List<Product> items = new ArrayList<>();
-        items.add(new Product("13", "Item3", ProductCategory.LUXURY, 200.00));
-        UserRole userRole = UserRole.STANDARD;
+        items.add(new Product("1", "Luxury1", ProductCategory.LUXURY, 100.00));
+        items.add(new Product("2", "Luxury2", ProductCategory.LUXURY, 200.00));
+        UserRole user_role = UserRole.STANDARD;
 
-        Receipt receipt = pricingService.calculate(items, userRole);
+        Receipt receipt = new PricingService().calculate(items, user_role);
 
-        assertEquals(200.00, receipt.getSubtotal(), 0.001);
-        assertEquals(40.00, receipt.getTaxAmount(), 0.001);
+        assertEquals(300.00, receipt.getSubtotal(), 0.001);
+        assertEquals(45.00, receipt.getTaxAmount(), 0.001);
         assertEquals(0.00, receipt.getDiscountAmount(), 0.001);
-        assertEquals(240.00, receipt.getGrandTotal(), 0.001);
+        assertEquals(345.00, receipt.getGrandTotal(), 0.001);
     }
 
     @Test
-    void Veteran_PureElectronics_NoVolume() {
+    void testEmployee_Complex_Mixed_Cart_Volume_HighValue_MAX_Discount() {
         List<Product> items = new ArrayList<>();
-        items.add(new Product("14", "Item4", ProductCategory.ELECTRONICS, 100.00));
-        UserRole userRole = UserRole.VETERAN;
+        items.add(new Product("1", "Luxury1", ProductCategory.LUXURY, 1000.00));
+        items.add(new Product("2", "Electronics1", ProductCategory.ELECTRONICS, 250.00));
+        items.add(new Product("3", "Food1", ProductCategory.FOOD, 20.00));
+        items.add(new Product("4", "Luxury2", ProductCategory.LUXURY, 500.00));
+        items.add(new Product("5", "Electronics2", ProductCategory.ELECTRONICS, 150.00));
+        items.add(new Product("6", "Food2", ProductCategory.FOOD, 30.00));
+        items.add(new Product("7", "Electronics3", ProductCategory.ELECTRONICS, 75.00));
+        UserRole user_role = UserRole.EMPLOYEE;
 
-        Receipt receipt = pricingService.calculate(items, userRole);
+        Receipt receipt = new PricingService().calculate(items, user_role);
 
-        assertEquals(100.00, receipt.getSubtotal(), 0.001);
-        assertEquals(10.00, receipt.getTaxAmount(), 0.001);
-        assertEquals(10.00, receipt.getDiscountAmount(), 0.001);
-        assertEquals(100.00, receipt.getGrandTotal(), 0.001);
+        assertEquals(2025.00, receipt.getSubtotal(), 0.001);
+        assertEquals(272.50, receipt.getTaxAmount(), 0.001);
+        assertEquals(405.00, receipt.getDiscountAmount(), 0.001);
+        assertEquals(1892.50, receipt.getGrandTotal(), 0.001);
     }
 
     @Test
-    void Employee_PureLuxury_NoVolume() {
+    void testVeteran_User_Volume_Boundary_5_Items_No_Volume_Discount() {
         List<Product> items = new ArrayList<>();
-        items.add(new Product("15", "Item5", ProductCategory.LUXURY, 200.00));
-        UserRole userRole = UserRole.EMPLOYEE;
+        items.add(new Product("1", "Food1", ProductCategory.FOOD, 10.00));
+        items.add(new Product("2", "Electronics1", ProductCategory.ELECTRONICS, 50.00));
+        items.add(new Product("3", "Luxury1", ProductCategory.LUXURY, 100.00));
+        items.add(new Product("4", "Food2", ProductCategory.FOOD, 10.00));
+        items.add(new Product("5", "Electronics2", ProductCategory.ELECTRONICS, 50.00));
+        UserRole user_role = UserRole.VETERAN;
 
-        Receipt receipt = pricingService.calculate(items, userRole);
+        Receipt receipt = new PricingService().calculate(items, user_role);
 
-        assertEquals(200.00, receipt.getSubtotal(), 0.001);
-        assertEquals(40.00, receipt.getTaxAmount(), 0.001);
-        assertEquals(40.00, receipt.getDiscountAmount(), 0.001);
-        assertEquals(200.00, receipt.getGrandTotal(), 0.001);
-    }
-
-    @Test
-    void Standard_MixedCart_5Items_NoVolumeDiscount() {
-        List<Product> items = new ArrayList<>();
-        items.add(new Product("16", "Item6", ProductCategory.FOOD, 10.00));
-        items.add(new Product("17", "Item7", ProductCategory.ELECTRONICS, 50.00));
-        items.add(new Product("18", "Item8", ProductCategory.LUXURY, 100.00));
-        items.add(new Product("19", "Item9", ProductCategory.FOOD, 5.00));
-        items.add(new Product("20", "Item10", ProductCategory.ELECTRONICS, 20.00));
-        UserRole userRole = UserRole.STANDARD;
-
-        Receipt receipt = pricingService.calculate(items, userRole);
-
-        assertEquals(185.00, receipt.getSubtotal(), 0.001);
-        assertEquals(27.00, receipt.getTaxAmount(), 0.001);
-        assertEquals(0.00, receipt.getDiscountAmount(), 0.001);
-        assertEquals(212.00, receipt.getGrandTotal(), 0.001);
-    }
-
-    @Test
-    void Standard_MixedCart_6Items_WithVolumeDiscount() {
-        List<Product> items = new ArrayList<>();
-        items.add(new Product("21", "Item11", ProductCategory.FOOD, 10.00));
-        items.add(new Product("22", "Item12", ProductCategory.ELECTRONICS, 50.00));
-        items.add(new Product("23", "Item13", ProductCategory.LUXURY, 100.00));
-        items.add(new Product("24", "Item14", ProductCategory.FOOD, 5.00));
-        items.add(new Product("25", "Item15", ProductCategory.ELECTRONICS, 20.00));
-        items.add(new Product("26", "Item16", ProductCategory.LUXURY, 30.00));
-        UserRole userRole = UserRole.STANDARD;
-
-        Receipt receipt = pricingService.calculate(items, userRole);
-
-        assertEquals(215.00, receipt.getSubtotal(), 0.001);
-        assertEquals(33.00, receipt.getTaxAmount(), 0.001);
-        assertEquals(10.75, receipt.getDiscountAmount(), 0.001);
-        assertEquals(237.25, receipt.getGrandTotal(), 0.001);
-    }
-
-    @Test
-    void Veteran_MixedCart_5Items_NoVolumeDiscount() {
-        List<Product> items = new ArrayList<>();
-        items.add(new Product("27", "Item17", ProductCategory.FOOD, 10.00));
-        items.add(new Product("28", "Item18", ProductCategory.ELECTRONICS, 50.00));
-        items.add(new Product("29", "Item19", ProductCategory.LUXURY, 100.00));
-        items.add(new Product("30", "Item20", ProductCategory.FOOD, 5.00));
-        items.add(new Product("31", "Item21", ProductCategory.ELECTRONICS, 20.00));
-        UserRole userRole = UserRole.VETERAN;
-
-        Receipt receipt = pricingService.calculate(items, userRole);
-
-        assertEquals(185.00, receipt.getSubtotal(), 0.001);
-        assertEquals(27.00, receipt.getTaxAmount(), 0.001);
-        assertEquals(18.50, receipt.getDiscountAmount(), 0.001);
-        assertEquals(193.50, receipt.getGrandTotal(), 0.001);
-    }
-
-    @Test
-    void Veteran_MixedCart_6Items_Verify15PercentTotalDiscount() {
-        List<Product> items = new ArrayList<>();
-        items.add(new Product("32", "Item22", ProductCategory.FOOD, 10.00));
-        items.add(new Product("33", "Item23", ProductCategory.ELECTRONICS, 50.00));
-        items.add(new Product("34", "Item24", ProductCategory.LUXURY, 100.00));
-        items.add(new Product("35", "Item25", ProductCategory.FOOD, 5.00));
-        items.add(new Product("36", "Item26", ProductCategory.ELECTRONICS, 20.00));
-        items.add(new Product("37", "Item27", ProductCategory.LUXURY, 30.00));
-        UserRole userRole = UserRole.VETERAN;
-
-        Receipt receipt = pricingService.calculate(items, userRole);
-
-        assertEquals(215.00, receipt.getSubtotal(), 0.001);
-        assertEquals(33.00, receipt.getTaxAmount(), 0.001);
-        assertEquals(32.25, receipt.getDiscountAmount(), 0.001);
-        assertEquals(215.75, receipt.getGrandTotal(), 0.001);
-    }
-
-    @Test
-    void Employee_MixedCart_5Items_NoVolumeDiscount() {
-        List<Product> items = new ArrayList<>();
-        items.add(new Product("38", "Item28", ProductCategory.FOOD, 10.00));
-        items.add(new Product("39", "Item29", ProductCategory.ELECTRONICS, 50.00));
-        items.add(new Product("40", "Item30", ProductCategory.LUXURY, 100.00));
-        items.add(new Product("41", "Item31", ProductCategory.FOOD, 5.00));
-        items.add(new Product("42", "Item32", ProductCategory.ELECTRONICS, 20.00));
-        UserRole userRole = UserRole.EMPLOYEE;
-
-        Receipt receipt = pricingService.calculate(items, userRole);
-
-        assertEquals(185.00, receipt.getSubtotal(), 0.001);
-        assertEquals(27.00, receipt.getTaxAmount(), 0.001);
-        assertEquals(37.00, receipt.getDiscountAmount(), 0.001);
-        assertEquals(175.00, receipt.getGrandTotal(), 0.001);
-    }
-
-    @Test
-    void Employee_MixedCart_6Items_Verify20PercentTotalDiscount_OverrideVolume() {
-        List<Product> items = new ArrayList<>();
-        items.add(new Product("43", "Item33", ProductCategory.FOOD, 10.00));
-        items.add(new Product("44", "Item34", ProductCategory.ELECTRONICS, 50.00));
-        items.add(new Product("45", "Item35", ProductCategory.LUXURY, 100.00));
-        items.add(new Product("46", "Item36", ProductCategory.FOOD, 5.00));
-        items.add(new Product("47", "Item37", ProductCategory.ELECTRONICS, 20.00));
-        items.add(new Product("48", "Item38", ProductCategory.LUXURY, 30.00));
-        UserRole userRole = UserRole.EMPLOYEE;
-
-        Receipt receipt = pricingService.calculate(items, userRole);
-
-        assertEquals(215.00, receipt.getSubtotal(), 0.001);
-        assertEquals(33.00, receipt.getTaxAmount(), 0.001);
-        assertEquals(43.00, receipt.getDiscountAmount(), 0.001);
-        assertEquals(205.00, receipt.getGrandTotal(), 0.001);
-    }
-
-    @Test
-    void Standard_PureFood_6Items_WithVolumeDiscount() {
-        List<Product> items = new ArrayList<>();
-        items.add(new Product("49", "Item39", ProductCategory.FOOD, 10.00));
-        items.add(new Product("50", "Item40", ProductCategory.FOOD, 10.00));
-        items.add(new Product("51", "Item41", ProductCategory.FOOD, 10.00));
-        items.add(new Product("52", "Item42", ProductCategory.FOOD, 10.00));
-        items.add(new Product("53", "Item43", ProductCategory.FOOD, 10.00));
-        items.add(new Product("54", "Item44", ProductCategory.FOOD, 10.00));
-        UserRole userRole = UserRole.STANDARD;
-
-        Receipt receipt = pricingService.calculate(items, userRole);
-
-        assertEquals(60.00, receipt.getSubtotal(), 0.001);
-        assertEquals(0.00, receipt.getTaxAmount(), 0.001);
-        assertEquals(3.00, receipt.getDiscountAmount(), 0.001);
-        assertEquals(57.00, receipt.getGrandTotal(), 0.001);
-    }
-
-    @Test
-    void Veteran_PureLuxury_6Items_Verify15PercentTotalDiscount() {
-        List<Product> items = new ArrayList<>();
-        items.add(new Product("55", "Item45", ProductCategory.LUXURY, 100.00));
-        items.add(new Product("56", "Item46", ProductCategory.LUXURY, 100.00));
-        items.add(new Product("57", "Item47", ProductCategory.LUXURY, 100.00));
-        items.add(new Product("58", "Item48", ProductCategory.LUXURY, 100.00));
-        items.add(new Product("59", "Item49", ProductCategory.LUXURY, 100.00));
-        items.add(new Product("60", "Item50", ProductCategory.LUXURY, 100.00));
-        UserRole userRole = UserRole.VETERAN;
-
-        Receipt receipt = pricingService.calculate(items, userRole);
-
-        assertEquals(600.00, receipt.getSubtotal(), 0.001);
-        assertEquals(120.00, receipt.getTaxAmount(), 0.001);
-        assertEquals(90.00, receipt.getDiscountAmount(), 0.001);
-        assertEquals(630.00, receipt.getGrandTotal(), 0.001);
-    }
-
-    @Test
-    void Employee_PureElectronics_6Items_Verify20PercentTotalDiscount_OverrideVolume() {
-        List<Product> items = new ArrayList<>();
-        items.add(new Product("61", "Item51", ProductCategory.ELECTRONICS, 100.00));
-        items.add(new Product("62", "Item52", ProductCategory.ELECTRONICS, 100.00));
-        items.add(new Product("63", "Item53", ProductCategory.ELECTRONICS, 100.00));
-        items.add(new Product("64", "Item54", ProductCategory.ELECTRONICS, 100.00));
-        items.add(new Product("65", "Item55", ProductCategory.ELECTRONICS, 100.00));
-        items.add(new Product("66", "Item56", ProductCategory.ELECTRONICS, 100.00));
-        UserRole userRole = UserRole.EMPLOYEE;
-
-        Receipt receipt = pricingService.calculate(items, userRole);
-
-        assertEquals(600.00, receipt.getSubtotal(), 0.001);
-        assertEquals(60.00, receipt.getTaxAmount(), 0.001);
-        assertEquals(120.00, receipt.getDiscountAmount(), 0.001);
-        assertEquals(540.00, receipt.getGrandTotal(), 0.001);
+        assertEquals(220.00, receipt.getSubtotal(), 0.001);
+        assertEquals(25.00, receipt.getTaxAmount(), 0.001);
+        assertEquals(22.00, receipt.getDiscountAmount(), 0.001);
+        assertEquals(223.00, receipt.getGrandTotal(), 0.001);
     }
 }
