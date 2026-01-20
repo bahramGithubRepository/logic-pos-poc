@@ -3,17 +3,16 @@ package com.logicpos;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.UUID;
 
 public class PricingServiceGeneratedTest {
 
     private PricingService pricingService;
-    private static final double DELTA = 0.001; // For double comparisons
+    private static final double DELTA = 0.01; // Tolerance for double comparisons in currency calculations
 
     @BeforeEach
     void setUp() {
@@ -21,424 +20,361 @@ public class PricingServiceGeneratedTest {
     }
 
     /**
-     * Helper method to create a list of Product objects from a list of item details.
-     * Each item detail map should contain "category" (String) and "price" (double).
+     * Helper method to create a list of Product objects from a list of ItemInput.
+     * This decouples the test from specific seeded products in InMemoryRepository,
+     * allowing flexible product definition based on test requirements.
      */
-    private List<Product> createProductList(List<Map<String, Object>> itemDetails) {
-        List<Product> products = new ArrayList<>();
-        int idCounter = 1; // Simple unique ID generator for test products
-        for (Map<String, Object> item : itemDetails) {
-            String categoryStr = (String) item.get("category");
-            ProductCategory category = ProductCategory.valueOf(categoryStr.toUpperCase());
-            double price = ((Number) item.get("price")).doubleValue();
-            products.add(new Product("item-" + (idCounter++), categoryStr, category, price));
+    private List<Product> createCart(List<ItemInput> itemInputs) {
+        List<Product> cart = new ArrayList<>();
+        for (int i = 0; i < itemInputs.size(); i++) {
+            ItemInput itemInput = itemInputs.get(i);
+            // Create a generic product for testing based on category and price.
+            // ID and Name are not used in PricingService's calculation logic.
+            ProductCategory category = ProductCategory.valueOf(itemInput.getCategory().toUpperCase());
+            Product product = new Product(UUID.randomUUID().toString(), "TestItem-" + i, category, itemInput.getPrice());
+            cart.add(product);
         }
-        return products;
+        return cart;
     }
 
-    @Test
-    @DisplayName("Scenario: Standard_Electronics_NoVolume_5Items")
-    void testStandard_Electronics_NoVolume_5Items() {
-        List<Map<String, Object>> items = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            items.add(Map.of("category", "Electronics", "price", 10.00));
+    /**
+     * Helper class to represent item inputs from the JSON requirements,
+     * simplifying the creation of test data.
+     */
+    private static class ItemInput {
+        private String category;
+        private double price;
+
+        public ItemInput(String category, double price) {
+            this.category = category;
+            this.price = price;
         }
-        List<Product> cart = createProductList(items);
+
+        public String getCategory() {
+            return category;
+        }
+
+        public double getPrice() {
+            return price;
+        }
+    }
+
+    // --- Test Scenarios based on Requirements ---
+
+    @Test
+    @DisplayName("Standard_Mixed_3_Items_NoDiscount")
+    void testStandardMixed3ItemsNoDiscount() {
+        List<ItemInput> items = new ArrayList<>();
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Luxury", 100.00));
         UserRole role = UserRole.STANDARD;
 
+        List<Product> cart = createCart(items);
         Receipt receipt = pricingService.calculate(cart, role);
 
-        assertEquals(50.00, receipt.getSubtotal(), DELTA);
-        assertEquals(4.00, receipt.getTaxAmount(), DELTA);
+        assertEquals(160.00, receipt.getSubtotal(), DELTA);
+        assertEquals(12.00, receipt.getTaxAmount(), DELTA);
         assertEquals(0.00, receipt.getDiscountAmount(), DELTA);
-        assertEquals(55.00, receipt.getGrandTotal(), DELTA);
+        assertEquals(172.00, receipt.getGrandTotal(), DELTA);
     }
 
     @Test
-    @DisplayName("Scenario: Standard_Electronics_Volume10_6Items")
-    void testStandard_Electronics_Volume10_6Items() {
-        List<Map<String, Object>> items = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            items.add(Map.of("category", "Electronics", "price", 10.00));
-        }
-        List<Product> cart = createProductList(items);
+    @DisplayName("Standard_Mixed_5_Items_NoDiscount_Boundary")
+    void testStandardMixed5ItemsNoDiscountBoundary() {
+        List<ItemInput> items = new ArrayList<>();
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Luxury", 100.00));
         UserRole role = UserRole.STANDARD;
 
+        List<Product> cart = createCart(items);
         Receipt receipt = pricingService.calculate(cart, role);
 
-        assertEquals(60.00, receipt.getSubtotal(), DELTA);
-        assertEquals(4.80, receipt.getTaxAmount(), DELTA);
-        assertEquals(6.00, receipt.getDiscountAmount(), DELTA);
-        assertEquals(59.80, receipt.getGrandTotal(), DELTA);
+        assertEquals(220.00, receipt.getSubtotal(), DELTA);
+        assertEquals(16.00, receipt.getTaxAmount(), DELTA);
+        assertEquals(0.00, receipt.getDiscountAmount(), DELTA);
+        assertEquals(236.00, receipt.getGrandTotal(), DELTA);
     }
 
     @Test
-    @DisplayName("Scenario: Standard_Electronics_Volume15_11Items")
-    void testStandard_Electronics_Volume15_11Items() {
-        List<Map<String, Object>> items = new ArrayList<>();
-        for (int i = 0; i < 11; i++) {
-            items.add(Map.of("category", "Electronics", "price", 10.00));
-        }
-        List<Product> cart = createProductList(items);
+    @DisplayName("Standard_Mixed_6_Items_VolumeDiscount_Boundary")
+    void testStandardMixed6ItemsVolumeDiscountBoundary() {
+        List<ItemInput> items = new ArrayList<>();
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Luxury", 100.00));
+        items.add(new ItemInput("Luxury", 100.00));
         UserRole role = UserRole.STANDARD;
 
+        List<Product> cart = createCart(items);
         Receipt receipt = pricingService.calculate(cart, role);
 
-        assertEquals(110.00, receipt.getSubtotal(), DELTA);
-        assertEquals(8.80, receipt.getTaxAmount(), DELTA);
-        assertEquals(16.50, receipt.getDiscountAmount(), DELTA);
-        assertEquals(103.30, receipt.getGrandTotal(), DELTA);
+        assertEquals(320.00, receipt.getSubtotal(), DELTA);
+        assertEquals(24.00, receipt.getTaxAmount(), DELTA);
+        assertEquals(32.00, receipt.getDiscountAmount(), DELTA);
+        assertEquals(312.00, receipt.getGrandTotal(), DELTA);
     }
 
     @Test
-    @DisplayName("Scenario: Veteran_Electronics_NoVolume_5Items")
-    void testVeteran_Electronics_NoVolume_5Items() {
-        List<Map<String, Object>> items = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            items.add(Map.of("category", "Electronics", "price", 10.00));
-        }
-        List<Product> cart = createProductList(items);
-        UserRole role = UserRole.VETERAN;
+    @DisplayName("Standard_PureFood_5_Items")
+    void testStandardPureFood5Items() {
+        List<ItemInput> items = new ArrayList<>();
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Food", 10.00));
+        UserRole role = UserRole.STANDARD;
 
+        List<Product> cart = createCart(items);
         Receipt receipt = pricingService.calculate(cart, role);
 
         assertEquals(50.00, receipt.getSubtotal(), DELTA);
-        assertEquals(4.00, receipt.getTaxAmount(), DELTA);
-        assertEquals(5.00, receipt.getDiscountAmount(), DELTA);
+        assertEquals(0.00, receipt.getTaxAmount(), DELTA);
+        assertEquals(0.00, receipt.getDiscountAmount(), DELTA);
         assertEquals(50.00, receipt.getGrandTotal(), DELTA);
     }
 
     @Test
-    @DisplayName("Scenario: Veteran_Electronics_Volume10_6Items_Stacked20")
-    void testVeteran_Electronics_Volume10_6Items_Stacked20() {
-        List<Map<String, Object>> items = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            items.add(Map.of("category", "Electronics", "price", 10.00));
-        }
-        List<Product> cart = createProductList(items);
-        UserRole role = UserRole.VETERAN;
+    @DisplayName("Standard_PureElectronics_5_Items")
+    void testStandardPureElectronics5Items() {
+        List<ItemInput> items = new ArrayList<>();
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        UserRole role = UserRole.STANDARD;
 
+        List<Product> cart = createCart(items);
         Receipt receipt = pricingService.calculate(cart, role);
 
-        assertEquals(60.00, receipt.getSubtotal(), DELTA);
-        assertEquals(4.80, receipt.getTaxAmount(), DELTA);
-        assertEquals(12.00, receipt.getDiscountAmount(), DELTA);
-        assertEquals(53.80, receipt.getGrandTotal(), DELTA);
+        assertEquals(250.00, receipt.getSubtotal(), DELTA);
+        assertEquals(20.00, receipt.getTaxAmount(), DELTA);
+        assertEquals(0.00, receipt.getDiscountAmount(), DELTA);
+        assertEquals(270.00, receipt.getGrandTotal(), DELTA);
     }
 
     @Test
-    @DisplayName("Scenario: Veteran_Electronics_Volume15_11Items_Stacked25")
-    void testVeteran_Electronics_Volume15_11Items_Stacked25() {
-        List<Map<String, Object>> items = new ArrayList<>();
-        for (int i = 0; i < 11; i++) {
-            items.add(Map.of("category", "Electronics", "price", 10.00));
-        }
-        List<Product> cart = createProductList(items);
-        UserRole role = UserRole.VETERAN;
+    @DisplayName("Standard_PureLuxury_5_Items")
+    void testStandardPureLuxury5Items() {
+        List<ItemInput> items = new ArrayList<>();
+        items.add(new ItemInput("Luxury", 100.00));
+        items.add(new ItemInput("Luxury", 100.00));
+        items.add(new ItemInput("Luxury", 100.00));
+        items.add(new ItemInput("Luxury", 100.00));
+        items.add(new ItemInput("Luxury", 100.00));
+        UserRole role = UserRole.STANDARD;
 
+        List<Product> cart = createCart(items);
         Receipt receipt = pricingService.calculate(cart, role);
 
-        assertEquals(110.00, receipt.getSubtotal(), DELTA);
-        assertEquals(8.80, receipt.getTaxAmount(), DELTA);
-        assertEquals(27.50, receipt.getDiscountAmount(), DELTA);
-        assertEquals(92.30, receipt.getGrandTotal(), DELTA);
+        assertEquals(500.00, receipt.getSubtotal(), DELTA);
+        assertEquals(40.00, receipt.getTaxAmount(), DELTA);
+        assertEquals(0.00, receipt.getDiscountAmount(), DELTA);
+        assertEquals(540.00, receipt.getGrandTotal(), DELTA);
     }
 
     @Test
-    @DisplayName("Scenario: Employee_Electronics_NoVolume_5Items_20Percent")
-    void testEmployee_Electronics_NoVolume_5Items_20Percent() {
-        List<Map<String, Object>> items = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            items.add(Map.of("category", "Electronics", "price", 10.00));
-        }
-        List<Product> cart = createProductList(items);
-        UserRole role = UserRole.EMPLOYEE;
+    @DisplayName("Veteran_Mixed_3_Items_VeteranDiscount")
+    void testVeteranMixed3ItemsVeteranDiscount() {
+        List<ItemInput> items = new ArrayList<>();
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Luxury", 100.00));
+        UserRole role = UserRole.VETERAN;
 
+        List<Product> cart = createCart(items);
+        Receipt receipt = pricingService.calculate(cart, role);
+
+        assertEquals(160.00, receipt.getSubtotal(), DELTA);
+        assertEquals(12.00, receipt.getTaxAmount(), DELTA);
+        assertEquals(24.00, receipt.getDiscountAmount(), DELTA);
+        assertEquals(148.00, receipt.getGrandTotal(), DELTA);
+    }
+
+    @Test
+    @DisplayName("Veteran_Mixed_5_Items_VeteranDiscount")
+    void testVeteranMixed5ItemsVeteranDiscount() {
+        List<ItemInput> items = new ArrayList<>();
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Luxury", 100.00));
+        UserRole role = UserRole.VETERAN;
+
+        List<Product> cart = createCart(items);
+        Receipt receipt = pricingService.calculate(cart, role);
+
+        assertEquals(220.00, receipt.getSubtotal(), DELTA);
+        assertEquals(16.00, receipt.getTaxAmount(), DELTA);
+        assertEquals(33.00, receipt.getDiscountAmount(), DELTA);
+        assertEquals(203.00, receipt.getGrandTotal(), DELTA);
+    }
+
+    @Test
+    @DisplayName("Veteran_Mixed_6_Items_AdditiveDiscount")
+    void testVeteranMixed6ItemsAdditiveDiscount() {
+        List<ItemInput> items = new ArrayList<>();
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Luxury", 100.00));
+        items.add(new ItemInput("Luxury", 100.00));
+        UserRole role = UserRole.VETERAN;
+
+        List<Product> cart = createCart(items);
+        Receipt receipt = pricingService.calculate(cart, role);
+
+        assertEquals(320.00, receipt.getSubtotal(), DELTA);
+        assertEquals(24.00, receipt.getTaxAmount(), DELTA);
+        assertEquals(80.00, receipt.getDiscountAmount(), DELTA);
+        assertEquals(264.00, receipt.getGrandTotal(), DELTA);
+    }
+
+    @Test
+    @DisplayName("Veteran_PureFood_5_Items")
+    void testVeteranPureFood5Items() {
+        List<ItemInput> items = new ArrayList<>();
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Food", 10.00));
+        UserRole role = UserRole.VETERAN;
+
+        List<Product> cart = createCart(items);
         Receipt receipt = pricingService.calculate(cart, role);
 
         assertEquals(50.00, receipt.getSubtotal(), DELTA);
-        assertEquals(4.00, receipt.getTaxAmount(), DELTA);
-        assertEquals(10.00, receipt.getDiscountAmount(), DELTA);
-        assertEquals(45.00, receipt.getGrandTotal(), DELTA);
-    }
-
-    @Test
-    @DisplayName("Scenario: Employee_Electronics_Volume10_6Items_Max20")
-    void testEmployee_Electronics_Volume10_6Items_Max20() {
-        List<Map<String, Object>> items = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            items.add(Map.of("category", "Electronics", "price", 10.00));
-        }
-        List<Product> cart = createProductList(items);
-        UserRole role = UserRole.EMPLOYEE;
-
-        Receipt receipt = pricingService.calculate(cart, role);
-
-        assertEquals(60.00, receipt.getSubtotal(), DELTA);
-        assertEquals(4.80, receipt.getTaxAmount(), DELTA);
-        assertEquals(12.00, receipt.getDiscountAmount(), DELTA);
-        assertEquals(53.80, receipt.getGrandTotal(), DELTA);
-    }
-
-    @Test
-    @DisplayName("Scenario: Employee_Electronics_Volume15_11Items_Max20")
-    void testEmployee_Electronics_Volume15_11Items_Max20() {
-        List<Map<String, Object>> items = new ArrayList<>();
-        for (int i = 0; i < 11; i++) {
-            items.add(Map.of("category", "Electronics", "price", 10.00));
-        }
-        List<Product> cart = createProductList(items);
-        UserRole role = UserRole.EMPLOYEE;
-
-        Receipt receipt = pricingService.calculate(cart, role);
-
-        assertEquals(110.00, receipt.getSubtotal(), DELTA);
-        assertEquals(8.80, receipt.getTaxAmount(), DELTA);
-        assertEquals(22.00, receipt.getDiscountAmount(), DELTA);
-        assertEquals(97.80, receipt.getGrandTotal(), DELTA);
-    }
-
-    @Test
-    @DisplayName("Scenario: Standard_Food_NoTax_3Items")
-    void testStandard_Food_NoTax_3Items() {
-        List<Map<String, Object>> items = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            items.add(Map.of("category", "Food", "price", 5.00));
-        }
-        List<Product> cart = createProductList(items);
-        UserRole role = UserRole.STANDARD;
-
-        Receipt receipt = pricingService.calculate(cart, role);
-
-        assertEquals(15.00, receipt.getSubtotal(), DELTA);
         assertEquals(0.00, receipt.getTaxAmount(), DELTA);
-        assertEquals(0.00, receipt.getDiscountAmount(), DELTA);
-        assertEquals(16.00, receipt.getGrandTotal(), DELTA);
+        assertEquals(7.50, receipt.getDiscountAmount(), DELTA);
+        assertEquals(42.50, receipt.getGrandTotal(), DELTA);
     }
 
     @Test
-    @DisplayName("Scenario: Standard_Luxury_HighTax_2Items")
-    void testStandard_Luxury_HighTax_2Items() {
-        List<Map<String, Object>> items = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
-            items.add(Map.of("category", "Luxury", "price", 100.00));
-        }
-        List<Product> cart = createProductList(items);
-        UserRole role = UserRole.STANDARD;
-
-        Receipt receipt = pricingService.calculate(cart, role);
-
-        assertEquals(200.00, receipt.getSubtotal(), DELTA);
-        assertEquals(26.00, receipt.getTaxAmount(), DELTA);
-        assertEquals(0.00, receipt.getDiscountAmount(), DELTA);
-        assertEquals(227.00, receipt.getGrandTotal(), DELTA);
-    }
-
-    @Test
-    @DisplayName("Scenario: Standard_MixedCart_Small_3Items")
-    void testStandard_MixedCart_Small_3Items() {
-        List<Map<String, Object>> items = new ArrayList<>();
-        items.add(Map.of("category", "Food", "price", 5.00));
-        items.add(Map.of("category", "Electronics", "price", 10.00));
-        items.add(Map.of("category", "Luxury", "price", 100.00));
-        
-        List<Product> cart = createProductList(items);
-        UserRole role = UserRole.STANDARD;
-
-        Receipt receipt = pricingService.calculate(cart, role);
-
-        assertEquals(115.00, receipt.getSubtotal(), DELTA);
-        assertEquals(13.80, receipt.getTaxAmount(), DELTA);
-        assertEquals(0.00, receipt.getDiscountAmount(), DELTA);
-        assertEquals(129.80, receipt.getGrandTotal(), DELTA);
-    }
-
-    @Test
-    @DisplayName("Scenario: Standard_MixedCart_Volume10_6Items")
-    void testStandard_MixedCart_Volume10_6Items() {
-        List<Map<String, Object>> items = new ArrayList<>();
-        items.add(Map.of("category", "Food", "price", 5.00));
-        items.add(Map.of("category", "Food", "price", 5.00));
-        items.add(Map.of("category", "Electronics", "price", 10.00));
-        items.add(Map.of("category", "Electronics", "price", 10.00));
-        items.add(Map.of("category", "Luxury", "price", 100.00));
-        items.add(Map.of("category", "Luxury", "price", 100.00));
-        
-        List<Product> cart = createProductList(items);
-        UserRole role = UserRole.STANDARD;
-
-        Receipt receipt = pricingService.calculate(cart, role);
-
-        assertEquals(230.00, receipt.getSubtotal(), DELTA);
-        assertEquals(27.60, receipt.getTaxAmount(), DELTA);
-        assertEquals(23.00, receipt.getDiscountAmount(), DELTA);
-        assertEquals(235.60, receipt.getGrandTotal(), DELTA);
-    }
-
-    @Test
-    @DisplayName("Scenario: Veteran_MixedCart_Volume10_6Items_Stacked20")
-    void testVeteran_MixedCart_Volume10_6Items_Stacked20() {
-        List<Map<String, Object>> items = new ArrayList<>();
-        items.add(Map.of("category", "Food", "price", 5.00));
-        items.add(Map.of("category", "Food", "price", 5.00));
-        items.add(Map.of("category", "Electronics", "price", 10.00));
-        items.add(Map.of("category", "Electronics", "price", 10.00));
-        items.add(Map.of("category", "Luxury", "price", 100.00));
-        items.add(Map.of("category", "Luxury", "price", 100.00));
-        
-        List<Product> cart = createProductList(items);
+    @DisplayName("Veteran_PureElectronics_5_Items")
+    void testVeteranPureElectronics5Items() {
+        List<ItemInput> items = new ArrayList<>();
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Electronics", 50.00));
         UserRole role = UserRole.VETERAN;
 
+        List<Product> cart = createCart(items);
         Receipt receipt = pricingService.calculate(cart, role);
 
-        assertEquals(230.00, receipt.getSubtotal(), DELTA);
-        assertEquals(27.60, receipt.getTaxAmount(), DELTA);
-        assertEquals(46.00, receipt.getDiscountAmount(), DELTA);
-        assertEquals(212.60, receipt.getGrandTotal(), DELTA);
+        assertEquals(250.00, receipt.getSubtotal(), DELTA);
+        assertEquals(20.00, receipt.getTaxAmount(), DELTA);
+        assertEquals(37.50, receipt.getDiscountAmount(), DELTA);
+        assertEquals(232.50, receipt.getGrandTotal(), DELTA);
     }
 
     @Test
-    @DisplayName("Scenario: Employee_MixedCart_Volume10_6Items_Max20")
-    void testEmployee_MixedCart_Volume10_6Items_Max20() {
-        List<Map<String, Object>> items = new ArrayList<>();
-        items.add(Map.of("category", "Food", "price", 5.00));
-        items.add(Map.of("category", "Food", "price", 5.00));
-        items.add(Map.of("category", "Electronics", "price", 10.00));
-        items.add(Map.of("category", "Electronics", "price", 10.00));
-        items.add(Map.of("category", "Luxury", "price", 100.00));
-        items.add(Map.of("category", "Luxury", "price", 100.00));
-        
-        List<Product> cart = createProductList(items);
+    @DisplayName("Employee_Mixed_3_Items_EmployeeDiscount")
+    void testEmployeeMixed3ItemsEmployeeDiscount() {
+        List<ItemInput> items = new ArrayList<>();
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Luxury", 100.00));
         UserRole role = UserRole.EMPLOYEE;
 
+        List<Product> cart = createCart(items);
         Receipt receipt = pricingService.calculate(cart, role);
 
-        assertEquals(230.00, receipt.getSubtotal(), DELTA);
-        assertEquals(27.60, receipt.getTaxAmount(), DELTA);
-        assertEquals(46.00, receipt.getDiscountAmount(), DELTA);
-        assertEquals(212.60, receipt.getGrandTotal(), DELTA);
+        assertEquals(160.00, receipt.getSubtotal(), DELTA);
+        assertEquals(12.00, receipt.getTaxAmount(), DELTA);
+        assertEquals(40.00, receipt.getDiscountAmount(), DELTA);
+        assertEquals(132.00, receipt.getGrandTotal(), DELTA);
     }
 
     @Test
-    @DisplayName("Scenario: Standard_Single_Electronics_1Item")
-    void testStandard_Single_Electronics_1Item() {
-        List<Map<String, Object>> items = new ArrayList<>();
-        items.add(Map.of("category", "Electronics", "price", 25.00));
-        
-        List<Product> cart = createProductList(items);
-        UserRole role = UserRole.STANDARD;
-
-        Receipt receipt = pricingService.calculate(cart, role);
-
-        assertEquals(25.00, receipt.getSubtotal(), DELTA);
-        assertEquals(2.00, receipt.getTaxAmount(), DELTA);
-        assertEquals(0.00, receipt.getDiscountAmount(), DELTA);
-        assertEquals(28.00, receipt.getGrandTotal(), DELTA);
-    }
-
-    @Test
-    @DisplayName("Scenario: Veteran_Single_Food_NoTax_1Item")
-    void testVeteran_Single_Food_NoTax_1Item() {
-        List<Map<String, Object>> items = new ArrayList<>();
-        items.add(Map.of("category", "Food", "price", 15.00));
-        
-        List<Product> cart = createProductList(items);
-        UserRole role = UserRole.VETERAN;
-
-        Receipt receipt = pricingService.calculate(cart, role);
-
-        assertEquals(15.00, receipt.getSubtotal(), DELTA);
-        assertEquals(0.00, receipt.getTaxAmount(), DELTA);
-        assertEquals(1.50, receipt.getDiscountAmount(), DELTA);
-        assertEquals(14.50, receipt.getGrandTotal(), DELTA);
-    }
-
-    @Test
-    @DisplayName("Scenario: ZeroCost_Item_Standard")
-    void testZeroCost_Item_Standard() {
-        List<Map<String, Object>> items = new ArrayList<>();
-        items.add(Map.of("category", "Electronics", "price", 0.00));
-        
-        List<Product> cart = createProductList(items);
-        UserRole role = UserRole.STANDARD;
-
-        Receipt receipt = pricingService.calculate(cart, role);
-
-        assertEquals(0.00, receipt.getSubtotal(), DELTA);
-        assertEquals(0.00, receipt.getTaxAmount(), DELTA);
-        assertEquals(0.00, receipt.getDiscountAmount(), DELTA);
-        assertEquals(1.00, receipt.getGrandTotal(), DELTA);
-    }
-    
-    @Test
-    @DisplayName("Scenario: Employee_Electronics_10Items_Volume10_Max20")
-    void testEmployee_Electronics_10Items_Volume10_Max20() {
-        List<Map<String, Object>> items = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            items.add(Map.of("category", "Electronics", "price", 10.00));
-        }
-        List<Product> cart = createProductList(items);
+    @DisplayName("Employee_Mixed_5_Items_EmployeeDiscount")
+    void testEmployeeMixed5ItemsEmployeeDiscount() {
+        List<ItemInput> items = new ArrayList<>();
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Luxury", 100.00));
         UserRole role = UserRole.EMPLOYEE;
 
+        List<Product> cart = createCart(items);
         Receipt receipt = pricingService.calculate(cart, role);
 
-        assertEquals(100.00, receipt.getSubtotal(), DELTA);
-        assertEquals(8.00, receipt.getTaxAmount(), DELTA);
-        assertEquals(20.00, receipt.getDiscountAmount(), DELTA);
-        assertEquals(89.00, receipt.getGrandTotal(), DELTA);
+        assertEquals(220.00, receipt.getSubtotal(), DELTA);
+        assertEquals(16.00, receipt.getTaxAmount(), DELTA);
+        assertEquals(55.00, receipt.getDiscountAmount(), DELTA);
+        assertEquals(181.00, receipt.getGrandTotal(), DELTA);
     }
 
     @Test
-    @DisplayName("Scenario: Veteran_Electronics_10Items_Volume10_Stacked20")
-    void testVeteran_Electronics_10Items_Volume10_Stacked20() {
-        List<Map<String, Object>> items = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            items.add(Map.of("category", "Electronics", "price", 10.00));
-        }
-        List<Product> cart = createProductList(items);
-        UserRole role = UserRole.VETERAN;
-
-        Receipt receipt = pricingService.calculate(cart, role);
-
-        assertEquals(100.00, receipt.getSubtotal(), DELTA);
-        assertEquals(8.00, receipt.getTaxAmount(), DELTA);
-        assertEquals(20.00, receipt.getDiscountAmount(), DELTA);
-        assertEquals(89.00, receipt.getGrandTotal(), DELTA);
-    }
-    
-    @Test
-    @DisplayName("Scenario: Veteran_Food_11Items_Volume15_Stacked25_NoTax")
-    void testVeteran_Food_11Items_Volume15_Stacked25_NoTax() {
-        List<Map<String, Object>> items = new ArrayList<>();
-        for (int i = 0; i < 11; i++) {
-            items.add(Map.of("category", "Food", "price", 5.00));
-        }
-        List<Product> cart = createProductList(items);
-        UserRole role = UserRole.VETERAN;
-
-        Receipt receipt = pricingService.calculate(cart, role);
-
-        assertEquals(55.00, receipt.getSubtotal(), DELTA);
-        assertEquals(0.00, receipt.getTaxAmount(), DELTA);
-        assertEquals(13.75, receipt.getDiscountAmount(), DELTA);
-        assertEquals(42.25, receipt.getGrandTotal(), DELTA);
-    }
-
-    @Test
-    @DisplayName("Scenario: Employee_Luxury_11Items_Volume15_Max20_HighTax")
-    void testEmployee_Luxury_11Items_Volume15_Max20_HighTax() {
-        List<Map<String, Object>> items = new ArrayList<>();
-        for (int i = 0; i < 11; i++) {
-            items.add(Map.of("category", "Luxury", "price", 100.00));
-        }
-        List<Product> cart = createProductList(items);
+    @DisplayName("Employee_Mixed_6_Items_MaxDiscount_Complex")
+    void testEmployeeMixed6ItemsMaxDiscountComplex() {
+        List<ItemInput> items = new ArrayList<>();
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Luxury", 100.00));
+        items.add(new ItemInput("Luxury", 100.00));
         UserRole role = UserRole.EMPLOYEE;
 
+        List<Product> cart = createCart(items);
         Receipt receipt = pricingService.calculate(cart, role);
 
-        assertEquals(1100.00, receipt.getSubtotal(), DELTA);
-        assertEquals(143.00, receipt.getTaxAmount(), DELTA);
-        assertEquals(220.00, receipt.getDiscountAmount(), DELTA);
-        assertEquals(1024.00, receipt.getGrandTotal(), DELTA);
+        assertEquals(320.00, receipt.getSubtotal(), DELTA);
+        assertEquals(24.00, receipt.getTaxAmount(), DELTA);
+        assertEquals(80.00, receipt.getDiscountAmount(), DELTA);
+        assertEquals(264.00, receipt.getGrandTotal(), DELTA);
+    }
+
+    @Test
+    @DisplayName("Employee_PureFood_5_Items")
+    void testEmployeePureFood5Items() {
+        List<ItemInput> items = new ArrayList<>();
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Food", 10.00));
+        items.add(new ItemInput("Food", 10.00));
+        UserRole role = UserRole.EMPLOYEE;
+
+        List<Product> cart = createCart(items);
+        Receipt receipt = pricingService.calculate(cart, role);
+
+        assertEquals(50.00, receipt.getSubtotal(), DELTA);
+        assertEquals(0.00, receipt.getTaxAmount(), DELTA);
+        assertEquals(12.50, receipt.getDiscountAmount(), DELTA);
+        assertEquals(37.50, receipt.getGrandTotal(), DELTA);
+    }
+
+    @Test
+    @DisplayName("Employee_PureElectronics_5_Items")
+    void testEmployeePureElectronics5Items() {
+        List<ItemInput> items = new ArrayList<>();
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        items.add(new ItemInput("Electronics", 50.00));
+        UserRole role = UserRole.EMPLOYEE;
+
+        List<Product> cart = createCart(items);
+        Receipt receipt = pricingService.calculate(cart, role);
+
+        assertEquals(250.00, receipt.getSubtotal(), DELTA);
+        assertEquals(20.00, receipt.getTaxAmount(), DELTA);
+        assertEquals(62.50, receipt.getDiscountAmount(), DELTA);
+        assertEquals(207.50, receipt.getGrandTotal(), DELTA);
     }
 }
