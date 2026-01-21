@@ -1,0 +1,1090 @@
+/*************************************************************************************/
+//                                                                                     
+// Description: LIN Description file created using Vector's DaVinci Network Designer   
+// Created:     30 Sep 2024 10:39:29
+// Author:      a493308
+// Version:     0.0
+//                                                                                     
+/*************************************************************************************/
+
+// COM_MATRIX_T2_1.38.X0
+
+LIN_description_file;
+LIN_protocol_version = "2.1";
+LIN_language_version = "2.1";
+LIN_speed = 9.6 kbps;
+
+Nodes {
+  Master: CCM, 5 ms, 0.5 ms ; 
+  Slaves: CTS_Bunk, EACC_TV, HVACActuator_Bunk_1, HVACActuator_Bunk_2, TVECH_C ;
+}
+
+
+Signals {
+  Comp_FaultClearRq: 2, 3, CCM, EACC_TV ; 
+  Comp_HvDischargeRq: 2, 3, CCM, EACC_TV ; 
+  Comp_HvInterlockRq: 2, 3, CCM, EACC_TV ; 
+  Comp_HvInterlockStat: 3, 0, EACC_TV, CCM ; 
+  Comp_OnRq: 2, 3, CCM, EACC_TV ; 
+  Comp_OprtnStat: 3, 0, EACC_TV, CCM ; 
+  CompSpd_Est: 8, 255, EACC_TV, CCM ; 
+  CompSpd_TargetCmd: 8, 255, CCM, EACC_TV ; 
+  CTS_B_Downtime: 12, 4095, CCM, CTS_Bunk ; 
+  CTS_B_DrvDoorOpen: 1, 0, CCM, CTS_Bunk ; 
+  CTS_B_DrvWindowStat: 4, 15, CCM, CTS_Bunk ; 
+  CTS_B_GlazingType: 3, 7, CCM, CTS_Bunk ; 
+  CTS_B_IradianceDrvSide: 6, 62, CCM, CTS_Bunk ; 
+  CTS_B_IradiancePassSide: 6, 63, CCM, CTS_Bunk ; 
+  CTS_B_ParameterSetting: 3, 7, CCM, CTS_Bunk ; 
+  CTS_B_PassDoorOpen: 1, 0, CCM, CTS_Bunk ; 
+  CTS_B_PassWindowStat: 4, 15, CCM, CTS_Bunk ; 
+  CTS_B_RearDrvDoorOpen: 1, 0, CCM, CTS_Bunk ; 
+  CTS_B_RearDrvWindowStat: 4, 15, CCM, CTS_Bunk ; 
+  CTS_B_RearPassDoorOpen: 1, 0, CCM, CTS_Bunk ; 
+  CTS_B_RearPassWindowStat: 4, 15, CCM, CTS_Bunk ; 
+  CTS_B_SoftTopPos: 1, 0, CCM, CTS_Bunk ; 
+  CTS_B_SunBlindPos: 1, 0, CCM, CTS_Bunk ; 
+  CTS_B_SunBlindStat: 4, 15, CCM, CTS_Bunk ; 
+  CTS_B_SunroofPos: 1, 0, CCM, CTS_Bunk ; 
+  CTS_B_SunroofStat: 4, 15, CCM, CTS_Bunk ; 
+  DiagInfo_TVECH_C: 7, 127, TVECH_C, CCM ; 
+  EAC_HV_Volt: 8, 255, EACC_TV, CCM ; 
+  EAC_HVInputCurr: 8, 255, EACC_TV, CCM ; 
+  EAC_HVPhaseCurr: 8, 255, EACC_TV, CCM ; 
+  EAC_InvrtTemp: 8, 255, EACC_TV, CCM ; 
+  EAC_OffSensFlt: 1, 0, EACC_TV, CCM ; 
+  EAC_OffShrtCurr: 1, 0, EACC_TV, CCM ; 
+  EAC_OffStall: 1, 0, EACC_TV, CCM ; 
+  EAC_RsErr: 1, 0, EACC_TV, CCM ; 
+  EAC_SpBrdTempLmt: 1, 0, EACC_TV, CCM ; 
+  EAC_SpCommFlt: 1, 0, EACC_TV, CCM ; 
+  EAC_SpCurrLmt: 1, 0, EACC_TV, CCM ; 
+  EAC_SpHVVoltFlt: 1, 0, EACC_TV, CCM ; 
+  EAC_SpInvrtPwrSupFlt: 1, 0, EACC_TV, CCM ; 
+  EAC_SpTempExcess: 1, 0, EACC_TV, CCM ; 
+  ElecHeatMaxPwrCmd_Cab: 8, 255, CCM, TVECH_C ; 
+  ElecHeatReqHVILMon_Cab: 2, 3, CCM, TVECH_C ; 
+  ElecHeatReqTVSDschrg_Cab: 2, 3, CCM, TVECH_C ; 
+  ElecHeatTargetTempCmd_Cab: 8, 255, CCM, TVECH_C ; 
+  HVACActB1Cmd_ConfigDir: 2, 1, CCM, HVACActuator_Bunk_1 ; 
+  HVACActB1Cmd_ConfigEmRun: 2, 1, CCM, HVACActuator_Bunk_1 ; 
+  HVACActB1Cmd_ConfigEmRunDir: 2, 0, CCM, HVACActuator_Bunk_1 ; 
+  HVACActB1Cmd_ConfigMode: 2, 1, CCM, HVACActuator_Bunk_1 ; 
+  HVACActB1Cmd_CtrlClearFlags: 4, 0, CCM, HVACActuator_Bunk_1 ; 
+  HVACActB1Cmd_CtrlLoadData: 2, 0, CCM, HVACActuator_Bunk_1 ; 
+  HVACActB1Cmd_CtrlStallEn: 2, 1, CCM, HVACActuator_Bunk_1 ; 
+  HVACActB1Cmd_FPOS: 16, 65535, CCM, HVACActuator_Bunk_1 ; 
+  HVACActB1Cmd_InitPOS: 16, 65535, CCM, HVACActuator_Bunk_1 ; 
+  HVACActB1Cmd_NAD: 8, 255, CCM, HVACActuator_Bunk_1 ; 
+  HVACActB1Cmd_ParamCoils: 2, 0, CCM, HVACActuator_Bunk_1 ; 
+  HVACActB1Cmd_ParamFreq: 4, 1, CCM, HVACActuator_Bunk_1 ; 
+  HVACActB1Cmd_ParamPosMode: 2, 2, CCM, HVACActuator_Bunk_1 ; 
+  HVACActB2Cmd_ConfigDir: 2, 1, CCM, HVACActuator_Bunk_2 ; 
+  HVACActB2Cmd_ConfigEmRun: 2, 1, CCM, HVACActuator_Bunk_2 ; 
+  HVACActB2Cmd_ConfigEmRunDir: 2, 0, CCM, HVACActuator_Bunk_2 ; 
+  HVACActB2Cmd_ConfigMode: 2, 1, CCM, HVACActuator_Bunk_2 ; 
+  HVACActB2Cmd_CtrlClearFlags: 4, 0, CCM, HVACActuator_Bunk_2 ; 
+  HVACActB2Cmd_CtrlLoadData: 2, 0, CCM, HVACActuator_Bunk_2 ; 
+  HVACActB2Cmd_CtrlStallEn: 2, 1, CCM, HVACActuator_Bunk_2 ; 
+  HVACActB2Cmd_FPOS: 16, 65535, CCM, HVACActuator_Bunk_2 ; 
+  HVACActB2Cmd_InitPOS: 16, 65535, CCM, HVACActuator_Bunk_2 ; 
+  HVACActB2Cmd_NAD: 8, 255, CCM, HVACActuator_Bunk_2 ; 
+  HVACActB2Cmd_ParamCoils: 2, 0, CCM, HVACActuator_Bunk_2 ; 
+  HVACActB2Cmd_ParamFreq: 4, 1, CCM, HVACActuator_Bunk_2 ; 
+  HVACActB2Cmd_ParamPosMode: 2, 2, CCM, HVACActuator_Bunk_2 ; 
+  LIN_CTS_B_ItosRaw: 10, 1023, CTS_Bunk, CCM ; 
+  LIN_CTS_B_RefRaw: 10, 1023, CTS_Bunk, CCM ; 
+  LIN_CTS_B_ResponseError: 1, 0, CTS_Bunk, CCM ; 
+  LIN_CTS_B_Solarradiance: 5, 30, CTS_Bunk, CCM ; 
+  LIN_CTS_B_Status: 2, 3, CTS_Bunk, CCM ; 
+  LIN_CTS_B_SunRaw: 10, 1023, CTS_Bunk, CCM ; 
+  LIN_CTS_B_Temperature: 12, 4094, CTS_Bunk, CCM ; 
+  LIN_CTS_B_TempOutofRange: 2, 3, CTS_Bunk, CCM ; 
+  LIN_ElecHeatCoolantTemp_Cab: 8, 255, TVECH_C, CCM ; 
+  LIN_ElecHeatHVILMonStat_Cab: 2, 3, TVECH_C, CCM ; 
+  LIN_ElecHeatHVILstat_Cab: 3, 7, TVECH_C, CCM ; 
+  LIN_ElecHeatMaxPower_Cab: 8, 255, TVECH_C, CCM ; 
+  LIN_ElecHeatPowerConsum_Cab: 8, 255, TVECH_C, CCM ; 
+  LIN_ElecHeatTargetTempStat_Cab: 8, 255, TVECH_C, CCM ; 
+  LIN_ElecHeatTVSDschCrctSts_Cab: 2, 3, TVECH_C, CCM ; 
+  LIN_ElecHeatTVVoltageStat_Cab: 10, 1023, TVECH_C, CCM ; 
+  LIN_HVACActB1Stat_Conf2RunUpDir: 2, 3, HVACActuator_Bunk_1, CCM ; 
+  LIN_HVACActB1Stat_Conf2SpecFnc: 2, 3, HVACActuator_Bunk_1, CCM ; 
+  LIN_HVACActB1Stat_Conf2TorqueVar: 2, 3, HVACActuator_Bunk_1, CCM ; 
+  LIN_HVACActB1Stat_ConfigDir: 2, 1, HVACActuator_Bunk_1, CCM ; 
+  LIN_HVACActB1Stat_ConfigEmRun: 2, 0, HVACActuator_Bunk_1, CCM ; 
+  LIN_HVACActB1Stat_ConfigEmRunDir: 2, 0, HVACActuator_Bunk_1, CCM ; 
+  LIN_HVACActB1Stat_ConfigMode: 2, 1, HVACActuator_Bunk_1, CCM ; 
+  LIN_HVACActB1Stat_CurrentPos: 16, 65535, HVACActuator_Bunk_1, CCM ; 
+  LIN_HVACActB1Stat_ErrorElectr: 2, 0, HVACActuator_Bunk_1, CCM ; 
+  LIN_HVACActB1Stat_ErrorSupply: 2, 0, HVACActuator_Bunk_1, CCM ; 
+  LIN_HVACActB1Stat_ErrorTemp: 2, 0, HVACActuator_Bunk_1, CCM ; 
+  LIN_HVACActB1Stat_NAD: 8, 255, HVACActuator_Bunk_1, CCM ; 
+  LIN_HVACActB1Stat_ParamCoils: 2, 0, HVACActuator_Bunk_1, CCM ; 
+  LIN_HVACActB1Stat_ParamFreq: 4, 0, HVACActuator_Bunk_1, CCM ; 
+  LIN_HVACActB1Stat_ParamPosMode: 2, 2, HVACActuator_Bunk_1, CCM ; 
+  LIN_HVACActB1Stat_ResponseError: 1, 0, HVACActuator_Bunk_1, CCM ; 
+  LIN_HVACActB1Stat_StatusEmRun: 2, 0, HVACActuator_Bunk_1, CCM ; 
+  LIN_HVACActB1Stat_StatusReset: 2, 0, HVACActuator_Bunk_1, CCM ; 
+  LIN_HVACActB1Stat_StatusStall: 2, 0, HVACActuator_Bunk_1, CCM ; 
+  LIN_HVACActB1Stat_StatusStallEn: 2, 0, HVACActuator_Bunk_1, CCM ; 
+  LIN_HVACActB2Stat_Conf2RunUpDir: 2, 3, HVACActuator_Bunk_2, CCM ; 
+  LIN_HVACActB2Stat_Conf2SpecFnc: 2, 3, HVACActuator_Bunk_2, CCM ; 
+  LIN_HVACActB2Stat_Conf2TorqueVar: 2, 3, HVACActuator_Bunk_2, CCM ; 
+  LIN_HVACActB2Stat_ConfigDir: 2, 1, HVACActuator_Bunk_2, CCM ; 
+  LIN_HVACActB2Stat_ConfigEmRun: 2, 0, HVACActuator_Bunk_2, CCM ; 
+  LIN_HVACActB2Stat_ConfigEmRunDir: 2, 0, HVACActuator_Bunk_2, CCM ; 
+  LIN_HVACActB2Stat_ConfigMode: 2, 1, HVACActuator_Bunk_2, CCM ; 
+  LIN_HVACActB2Stat_CurrentPos: 16, 65535, HVACActuator_Bunk_2, CCM ; 
+  LIN_HVACActB2Stat_ErrorElectr: 2, 0, HVACActuator_Bunk_2, CCM ; 
+  LIN_HVACActB2Stat_ErrorSupply: 2, 0, HVACActuator_Bunk_2, CCM ; 
+  LIN_HVACActB2Stat_ErrorTemp: 2, 0, HVACActuator_Bunk_2, CCM ; 
+  LIN_HVACActB2Stat_NAD: 8, 255, HVACActuator_Bunk_2, CCM ; 
+  LIN_HVACActB2Stat_ParamCoils: 2, 0, HVACActuator_Bunk_2, CCM ; 
+  LIN_HVACActB2Stat_ParamFreq: 4, 0, HVACActuator_Bunk_2, CCM ; 
+  LIN_HVACActB2Stat_ParamPosMode: 2, 2, HVACActuator_Bunk_2, CCM ; 
+  LIN_HVACActB2Stat_ResponseError: 1, 0, HVACActuator_Bunk_2, CCM ; 
+  LIN_HVACActB2Stat_StatusEmRun: 2, 0, HVACActuator_Bunk_2, CCM ; 
+  LIN_HVACActB2Stat_StatusReset: 2, 0, HVACActuator_Bunk_2, CCM ; 
+  LIN_HVACActB2Stat_StatusStall: 2, 0, HVACActuator_Bunk_2, CCM ; 
+  LIN_HVACActB2Stat_StatusStallEn: 2, 0, HVACActuator_Bunk_2, CCM ; 
+  ResponseErrorTVECHC: 1, 0, TVECH_C, CCM ; 
+}
+
+Diagnostic_signals {
+  MasterReqB0: 8, 0 ;
+  MasterReqB1: 8, 0 ;
+  MasterReqB2: 8, 0 ;
+  MasterReqB3: 8, 0 ;
+  MasterReqB4: 8, 0 ;
+  MasterReqB5: 8, 0 ;
+  MasterReqB6: 8, 0 ;
+  MasterReqB7: 8, 0 ;
+  SlaveRespB0: 8, 0 ;
+  SlaveRespB1: 8, 0 ;
+  SlaveRespB2: 8, 0 ;
+  SlaveRespB3: 8, 0 ;
+  SlaveRespB4: 8, 0 ;
+  SlaveRespB5: 8, 0 ;
+  SlaveRespB6: 8, 0 ;
+  SlaveRespB7: 8, 0 ;
+}
+
+
+
+Frames {
+  CCMtoCTSBunk_L28: 54, CCM, 8 {
+    CTS_B_IradianceDrvSide, 0 ;
+    CTS_B_DrvDoorOpen, 6 ;
+    CTS_B_PassDoorOpen, 7 ;
+    CTS_B_IradiancePassSide, 8 ;
+    CTS_B_RearDrvDoorOpen, 14 ;
+    CTS_B_RearPassDoorOpen, 15 ;
+    CTS_B_DrvWindowStat, 16 ;
+    CTS_B_PassWindowStat, 20 ;
+    CTS_B_RearDrvWindowStat, 24 ;
+    CTS_B_RearPassWindowStat, 28 ;
+    CTS_B_SunroofStat, 32 ;
+    CTS_B_SunBlindStat, 36 ;
+    CTS_B_GlazingType, 40 ;
+    CTS_B_ParameterSetting, 43 ;
+    CTS_B_SunroofPos, 46 ;
+    CTS_B_SunBlindPos, 47 ;
+    CTS_B_Downtime, 48 ;
+    CTS_B_SoftTopPos, 60 ;
+  } 
+  CTSBunkToCCM_L28: 55, CTS_Bunk, 8 {
+    LIN_CTS_B_Status, 12 ;
+    LIN_CTS_B_TempOutofRange, 14 ;
+    LIN_CTS_B_ResponseError, 16 ;
+    LIN_CTS_B_Solarradiance, 17 ;
+    LIN_CTS_B_ItosRaw, 22 ;
+    LIN_CTS_B_RefRaw, 32 ;
+    LIN_CTS_B_SunRaw, 42 ;
+    LIN_CTS_B_Temperature, 52 ;
+  } 
+  EACCTVtoMaster_L28: 27, EACC_TV, 8 {
+    CompSpd_Est, 0 ;
+    EAC_HVInputCurr, 16 ;
+    EAC_HV_Volt, 24 ;
+    EAC_InvrtTemp, 32 ;
+    EAC_HVPhaseCurr, 40 ;
+    EAC_SpBrdTempLmt, 48 ;
+    EAC_SpCurrLmt, 49 ;
+    EAC_SpHVVoltFlt, 50 ;
+    EAC_SpTempExcess, 51 ;
+    EAC_SpCommFlt, 52 ;
+    EAC_SpInvrtPwrSupFlt, 53 ;
+    EAC_OffSensFlt, 54 ;
+    EAC_OffShrtCurr, 55 ;
+    EAC_OffStall, 56 ;
+    EAC_RsErr, 57 ;
+    Comp_HvInterlockStat, 58 ;
+    Comp_OprtnStat, 61 ;
+  } 
+  HVACActB1Cmd_LIN28: 3, CCM, 8 {
+    HVACActB1Cmd_NAD, 0 ;
+    HVACActB1Cmd_CtrlLoadData, 8 ;
+    HVACActB1Cmd_CtrlStallEn, 10 ;
+    HVACActB1Cmd_CtrlClearFlags, 12 ;
+    HVACActB1Cmd_ParamCoils, 16 ;
+    HVACActB1Cmd_ParamPosMode, 18 ;
+    HVACActB1Cmd_ParamFreq, 20 ;
+    HVACActB1Cmd_FPOS, 24 ;
+    HVACActB1Cmd_InitPOS, 40 ;
+    HVACActB1Cmd_ConfigEmRun, 56 ;
+    HVACActB1Cmd_ConfigEmRunDir, 58 ;
+    HVACActB1Cmd_ConfigDir, 60 ;
+    HVACActB1Cmd_ConfigMode, 62 ;
+  } 
+  HVACActB1Sta_LIN28: 35, HVACActuator_Bunk_1, 8 {
+    LIN_HVACActB1Stat_ResponseError, 0 ;
+    LIN_HVACActB1Stat_ErrorTemp, 2 ;
+    LIN_HVACActB1Stat_ErrorElectr, 4 ;
+    LIN_HVACActB1Stat_ErrorSupply, 6 ;
+    LIN_HVACActB1Stat_StatusEmRun, 8 ;
+    LIN_HVACActB1Stat_StatusStallEn, 10 ;
+    LIN_HVACActB1Stat_StatusStall, 12 ;
+    LIN_HVACActB1Stat_StatusReset, 14 ;
+    LIN_HVACActB1Stat_ParamCoils, 16 ;
+    LIN_HVACActB1Stat_ParamPosMode, 18 ;
+    LIN_HVACActB1Stat_ParamFreq, 20 ;
+    LIN_HVACActB1Stat_CurrentPos, 24 ;
+    LIN_HVACActB1Stat_Conf2RunUpDir, 40 ;
+    LIN_HVACActB1Stat_Conf2TorqueVar, 42 ;
+    LIN_HVACActB1Stat_Conf2SpecFnc, 44 ;
+    LIN_HVACActB1Stat_NAD, 48 ;
+    LIN_HVACActB1Stat_ConfigEmRun, 56 ;
+    LIN_HVACActB1Stat_ConfigEmRunDir, 58 ;
+    LIN_HVACActB1Stat_ConfigDir, 60 ;
+    LIN_HVACActB1Stat_ConfigMode, 62 ;
+  } 
+  HVACActB2Cmd_LIN28: 5, CCM, 8 {
+    HVACActB2Cmd_NAD, 0 ;
+    HVACActB2Cmd_CtrlLoadData, 8 ;
+    HVACActB2Cmd_CtrlStallEn, 10 ;
+    HVACActB2Cmd_CtrlClearFlags, 12 ;
+    HVACActB2Cmd_ParamCoils, 16 ;
+    HVACActB2Cmd_ParamPosMode, 18 ;
+    HVACActB2Cmd_ParamFreq, 20 ;
+    HVACActB2Cmd_FPOS, 24 ;
+    HVACActB2Cmd_InitPOS, 40 ;
+    HVACActB2Cmd_ConfigEmRun, 56 ;
+    HVACActB2Cmd_ConfigEmRunDir, 58 ;
+    HVACActB2Cmd_ConfigDir, 60 ;
+    HVACActB2Cmd_ConfigMode, 62 ;
+  } 
+  HVACActB2Sta_LIN28: 37, HVACActuator_Bunk_2, 8 {
+    LIN_HVACActB2Stat_ResponseError, 0 ;
+    LIN_HVACActB2Stat_ErrorTemp, 2 ;
+    LIN_HVACActB2Stat_ErrorElectr, 4 ;
+    LIN_HVACActB2Stat_ErrorSupply, 6 ;
+    LIN_HVACActB2Stat_StatusEmRun, 8 ;
+    LIN_HVACActB2Stat_StatusStallEn, 10 ;
+    LIN_HVACActB2Stat_StatusStall, 12 ;
+    LIN_HVACActB2Stat_StatusReset, 14 ;
+    LIN_HVACActB2Stat_ParamCoils, 16 ;
+    LIN_HVACActB2Stat_ParamPosMode, 18 ;
+    LIN_HVACActB2Stat_ParamFreq, 20 ;
+    LIN_HVACActB2Stat_CurrentPos, 24 ;
+    LIN_HVACActB2Stat_Conf2RunUpDir, 40 ;
+    LIN_HVACActB2Stat_Conf2TorqueVar, 42 ;
+    LIN_HVACActB2Stat_Conf2SpecFnc, 44 ;
+    LIN_HVACActB2Stat_NAD, 48 ;
+    LIN_HVACActB2Stat_ConfigEmRun, 56 ;
+    LIN_HVACActB2Stat_ConfigEmRunDir, 58 ;
+    LIN_HVACActB2Stat_ConfigDir, 60 ;
+    LIN_HVACActB2Stat_ConfigMode, 62 ;
+  } 
+  MastertoEACCTV_L28: 26, CCM, 3 {
+    CompSpd_TargetCmd, 0 ;
+    Comp_OnRq, 16 ;
+    Comp_FaultClearRq, 18 ;
+    Comp_HvInterlockRq, 20 ;
+    Comp_HvDischargeRq, 22 ;
+  } 
+  MastertoTVECHC_L28: 34, CCM, 5 {
+    ElecHeatMaxPwrCmd_Cab, 0 ;
+    ElecHeatTargetTempCmd_Cab, 8 ;
+    ElecHeatReqHVILMon_Cab, 16 ;
+    ElecHeatReqTVSDschrg_Cab, 18 ;
+  } 
+  TVECHCtoMaster_L28: 33, TVECH_C, 8 {
+    DiagInfo_TVECH_C, 0 ;
+    ResponseErrorTVECHC, 7 ;
+    LIN_ElecHeatMaxPower_Cab, 8 ;
+    LIN_ElecHeatTargetTempStat_Cab, 16 ;
+    LIN_ElecHeatPowerConsum_Cab, 24 ;
+    LIN_ElecHeatCoolantTemp_Cab, 32 ;
+    LIN_ElecHeatHVILstat_Cab, 40 ;
+    LIN_ElecHeatHVILMonStat_Cab, 43 ;
+    LIN_ElecHeatTVSDschCrctSts_Cab, 45 ;
+    LIN_ElecHeatTVVoltageStat_Cab, 47 ;
+  } 
+}
+
+
+
+Diagnostic_frames {
+  MasterReq: 0x3c {
+    MasterReqB0, 0 ;
+    MasterReqB1, 8 ;
+    MasterReqB2, 16 ;
+    MasterReqB3, 24 ;
+    MasterReqB4, 32 ;
+    MasterReqB5, 40 ;
+    MasterReqB6, 48 ;
+    MasterReqB7, 56 ;
+  }
+  SlaveResp: 0x3d {
+    SlaveRespB0, 0 ;
+    SlaveRespB1, 8 ;
+    SlaveRespB2, 16 ;
+    SlaveRespB3, 24 ;
+    SlaveRespB4, 32 ;
+    SlaveRespB5, 40 ;
+    SlaveRespB6, 48 ;
+    SlaveRespB7, 56 ;
+  }
+}
+
+Node_attributes {
+  CTS_Bunk{
+    LIN_protocol = "2.1" ;
+    configured_NAD = 0x64 ;
+    initial_NAD = 0x64 ;
+    product_id = 0x0, 0x0, 0 ;
+    response_error = LIN_CTS_B_ResponseError ;
+    N_As_timeout = 1000 ms ;
+    N_Cr_timeout = 1000 ms ;
+    configurable_frames {
+      CTSBunkToCCM_L28 ;
+      CCMtoCTSBunk_L28 ;
+    }
+  } 
+  EACC_TV{
+    LIN_protocol = "2.1" ;
+    configured_NAD = 0x5c ;
+    initial_NAD = 0x5c ;
+    product_id = 0x91, 0x500, 0 ;
+    response_error = EAC_RsErr ;
+    N_As_timeout = 1000 ms ;
+    N_Cr_timeout = 1000 ms ;
+    configurable_frames {
+      EACCTVtoMaster_L28 ;
+      MastertoEACCTV_L28 ;
+    }
+  } // Electrical A/C Compressor, Traction Voltage
+  HVACActuator_Bunk_1{
+    LIN_protocol = "2.1" ;
+    configured_NAD = 0x23 ;
+    initial_NAD = 0x23 ;
+    product_id = 0x76, 0x2, 85 ;
+    response_error = LIN_HVACActB1Stat_ResponseError ;
+    N_As_timeout = 1000 ms ;
+    N_Cr_timeout = 1000 ms ;
+    configurable_frames {
+      HVACActB1Sta_LIN28 ;
+      HVACActB1Cmd_LIN28 ;
+    }
+  } 
+  HVACActuator_Bunk_2{
+    LIN_protocol = "2.1" ;
+    configured_NAD = 0x25 ;
+    initial_NAD = 0x25 ;
+    product_id = 0x76, 0x2, 85 ;
+    response_error = LIN_HVACActB2Stat_ResponseError ;
+    N_As_timeout = 1000 ms ;
+    N_Cr_timeout = 1000 ms ;
+    configurable_frames {
+      HVACActB2Sta_LIN28 ;
+      HVACActB2Cmd_LIN28 ;
+    }
+  } 
+  TVECH_C{
+    LIN_protocol = "2.1" ;
+    configured_NAD = 0x4b ;
+    initial_NAD = 0x4b ;
+    product_id = 0x5b, 0x0, 0 ;
+    response_error = ResponseErrorTVECHC ;
+    N_As_timeout = 1000 ms ;
+    N_Cr_timeout = 1000 ms ;
+    configurable_frames {
+      TVECHCtoMaster_L28 ;
+      MastertoTVECHC_L28 ;
+    }
+  } // Traction Voltage Electric Coolant Heater, Cab
+}
+
+Schedule_tables {
+ Table0 {
+    HVACActB2Cmd_LIN28 delay 20 ms ;
+    HVACActB1Sta_LIN28 delay 20 ms ;
+    HVACActB1Cmd_LIN28 delay 20 ms ;
+    HVACActB2Sta_LIN28 delay 20 ms ;
+    CCMtoCTSBunk_L28 delay 20 ms ;
+    CTSBunkToCCM_L28 delay 20 ms ;
+  }
+ MasterReq_Table {
+    MasterReq delay 20 ms ;
+  }
+ SlaveResp_Table {
+    SlaveResp delay 20 ms ;
+  }
+ Table1 {
+    MastertoTVECHC_L28 delay 15 ms ;
+    MastertoEACCTV_L28 delay 15 ms ;
+    TVECHCtoMaster_L28 delay 20 ms ;
+    EACCTVtoMaster_L28 delay 20 ms ;
+  }
+ MasterReq_SlaveResp_Table1 {
+    MasterReq delay 20 ms ;
+    SlaveResp delay 20 ms ;
+    MastertoTVECHC_L28 delay 15 ms ;
+    MastertoEACCTV_L28 delay 15 ms ;
+    TVECHCtoMaster_L28 delay 20 ms ;
+    EACCTVtoMaster_L28 delay 20 ms ;
+  }
+}
+
+
+Signal_encoding_types {
+  Comp_FaultClearRq {
+    logical_value, 0, "Comp_FaultClearRq_NoReset" ;
+    logical_value, 1, "Comp_FaultClearRq_Reset" ;
+    logical_value, 2, "Comp_FaultClearRq_NotDefined" ;
+    logical_value, 3, "Comp_FaultClearRq_DoNotUse" ;
+  } 
+  Comp_HvDischargeRq {
+    logical_value, 0, "OffOnRq_Off" ;
+    logical_value, 1, "OffOnRq_On" ;
+    logical_value, 2, "OffOnRq_NotDefined" ;
+    logical_value, 3, "OffOnRq_DoNotUse" ;
+  } 
+  Comp_HvInterlockRq {
+    logical_value, 0, "OffOnRq_Off" ;
+    logical_value, 1, "OffOnRq_On" ;
+    logical_value, 2, "OffOnRq_NotDefined" ;
+    logical_value, 3, "OffOnRq_DoNotUse" ;
+  } 
+  Comp_HvInterlockStat {
+    logical_value, 0, "Comp_HvInterlockStat_Off" ;
+    logical_value, 1, "Comp_HvInterlockStat_Closed" ;
+    logical_value, 2, "Comp_HvInterlockStat_Open" ;
+    logical_value, 3, "Comp_HvInterlockStat_Overcurrent" ;
+    logical_value, 4, "Comp_HvInterlockStat_HWerror" ;
+    logical_value, 5, "Comp_HvInterlockStat_Spare1" ;
+    logical_value, 6, "Comp_HvInterlockStat_Spare2" ;
+    logical_value, 7, "Comp_HvInterlockStat_Spare3" ;
+  } 
+  Comp_OnRq {
+    logical_value, 0, "OffOnRq_Off" ;
+    logical_value, 1, "OffOnRq_On" ;
+    logical_value, 2, "OffOnRq_NotDefined" ;
+    logical_value, 3, "OffOnRq_DoNotUse" ;
+  } 
+  Comp_OprtnStat {
+    logical_value, 0, "Comp_OprtnStat_Off" ;
+    logical_value, 1, "Comp_OprtnStat_On" ;
+    logical_value, 2, "Comp_OprtnStat_Stopped" ;
+    logical_value, 3, "Comp_OprtnStat_DirectPWM" ;
+    logical_value, 4, "Comp_OprtnStat_Degraded" ;
+    logical_value, 5, "Comp_OprtnStat_ActiveDischarge" ;
+    logical_value, 6, "Comp_OprtnStat_Spare4" ;
+    logical_value, 7, "Comp_OprtnStat_Spare5" ;
+  } 
+  CompSpd_Est {
+    physical_value, 0, 255, 50, 0, "rpm" ;
+  } 
+  CompSpd_TargetCmd {
+    physical_value, 0, 255, 50, 0, "rpm" ;
+  } 
+  CTS_B_Downtime {
+    physical_value, 0, 4095, 1, 0, "min" ;
+  } 
+  CTS_B_DrvWindowStat {
+    physical_value, 0, 15, 10, 0, "Percent" ;
+  } 
+  CTS_B_GlazingType {
+    logical_value, 0, "CTS_GlazingType_NormalGlazing" ;
+    logical_value, 1, "CTS_GlazingType_HeatProtectedGlass" ;
+    logical_value, 2, "CTS_GlazingType_Spare1" ;
+    logical_value, 3, "CTS_GlazingType_Spare2" ;
+    logical_value, 4, "CTS_GlazingType_Spare3" ;
+    logical_value, 5, "CTS_GlazingType_Spare4" ;
+    logical_value, 6, "CTS_GlazingType_Spare5" ;
+    logical_value, 7, "CTS_GlazingType_Spare6" ;
+  } 
+  CTS_B_IradianceDrvSide {
+    physical_value, 0, 63, 20, 0, "W_per_m_squared" ;
+  } 
+  CTS_B_IradiancePassSide {
+    physical_value, 0, 63, 20, 0, "W_per_m_squared" ;
+  } 
+  CTS_B_PassWindowStat {
+    physical_value, 0, 15, 10, 0, "Percent" ;
+  } 
+  CTS_B_RearDrvWindowStat {
+    physical_value, 0, 15, 10, 0, "Percent" ;
+  } 
+  CTS_B_RearPassWindowStat {
+    physical_value, 0, 15, 10, 0, "Percent" ;
+  } 
+  CTS_B_SunBlindStat {
+    physical_value, 0, 15, 10, 0, "Percent" ;
+  } 
+  CTS_B_SunroofStat {
+    physical_value, 0, 15, 10, 0, "Percent" ;
+  } 
+  DiagInfo_TVECH_C {
+    physical_value, 0, 127, 1, 0, "NotApplicable" ;
+  } 
+  EAC_HV_Volt {
+    physical_value, 0, 255, 5, 0, "V" ;
+  } 
+  EAC_HVInputCurr {
+    physical_value, 0, 255, 0.5, 0, "A" ;
+  } 
+  EAC_HVPhaseCurr {
+    physical_value, 0, 255, 0.5, 0, "A" ;
+  } 
+  EAC_InvrtTemp {
+    physical_value, 0, 255, 1, -50, "DegreeC" ;
+  } 
+  ElecHeatMaxPwrCmd_Cab {
+    physical_value, 0, 255, 0.5, 0, "Percent" ;
+  } 
+  ElecHeatReqHVILMon_Cab {
+    logical_value, 0, "NotRequested_NotRequested" ;
+    logical_value, 1, "NotRequested_Requested" ;
+    logical_value, 2, "NotRequested_Error" ;
+    logical_value, 3, "NotRequested_NotAvailable" ;
+  } 
+  ElecHeatReqTVSDschrg_Cab {
+    logical_value, 0, "NotRequested_NotRequested" ;
+    logical_value, 1, "NotRequested_Requested" ;
+    logical_value, 2, "NotRequested_Error" ;
+    logical_value, 3, "NotRequested_NotAvailable" ;
+  } 
+  ElecHeatTargetTempCmd_Cab {
+    physical_value, 0, 255, 0.5, -20, "DegreeC" ;
+  } 
+  HVACActB1Cmd_ConfigDir {
+    logical_value, 0, "HVACActConfigDir_MovermentsInCW" ;
+    logical_value, 1, "HVACActConfigDir_MovementsInCCW" ;
+    logical_value, 2, "HVACActConfigDir_NA1" ;
+    logical_value, 3, "HVACActConfigDir_NA2" ;
+  } 
+  HVACActB1Cmd_ConfigEmRun {
+    logical_value, 0, "HVACActConfigEmRunCmd_EmergencyRunDisabled" ;
+    logical_value, 1, "HVACActConfigEmRunCmd_EmergencyRunEnabled" ;
+    logical_value, 2, "HVACActConfigEmRunCmd_NA1" ;
+    logical_value, 3, "HVACActConfigEmRunCmd_NA2" ;
+  } 
+  HVACActB1Cmd_ConfigEmRunDir {
+    logical_value, 0, "HVACActConfigEmRunDir_EmergencyRunLowEndStop" ;
+    logical_value, 1, "HVACActConfigEmRunDir_EmergencyRunHighEndStop" ;
+    logical_value, 2, "HVACActConfigEmRunDir_NA1" ;
+    logical_value, 3, "HVACActConfigEmRunDir_NA2" ;
+  } 
+  HVACActB1Cmd_ConfigMode {
+    logical_value, 0, "HVACActConfigMode_NormalMode" ;
+    logical_value, 1, "HVACActConfigMode_StopMode" ;
+    logical_value, 2, "HVACActConfigMode_NA1" ;
+    logical_value, 3, "HVACActConfigMode_NA2" ;
+  } 
+  HVACActB1Cmd_CtrlClearFlags {
+    physical_value, 0, 15, 1, 0, "NotApplicable" ;
+  } 
+  HVACActB1Cmd_CtrlLoadData {
+    logical_value, 0, "HVACActCtrlLoadData_DoNotSaveInNVRAM" ;
+    logical_value, 1, "HVACActCtrlLoadData_SaveDataInNVRAM" ;
+    logical_value, 2, "HVACActCtrlLoadData_Reserved" ;
+    logical_value, 3, "HVACActCtrlLoadData_Invalid" ;
+  } 
+  HVACActB1Cmd_CtrlStallEn {
+    logical_value, 0, "HVACActCtrlStallEn_Off" ;
+    logical_value, 1, "HVACActCtrlStallEn_On" ;
+    logical_value, 2, "HVACActCtrlStallEn_NA1" ;
+    logical_value, 3, "HVACActCtrlStallEn_NA2" ;
+  } 
+  HVACActB1Cmd_ParamCoils {
+    logical_value, 0, "HVACActParamCoils_CoilsNotEnergizedWhenActStopped" ;
+    logical_value, 1, "HVACActParamCoils_CoilsNEnergizedWhenActStopped" ;
+    logical_value, 2, "HVACActParamCoils_Reserved" ;
+    logical_value, 3, "HVACActParamCoils_Invalid" ;
+  } 
+  HVACActB1Cmd_ParamFreq {
+    logical_value, 0, "HVACActParamFreq_Stopped" ;
+    logical_value, 1, "HVACActParamFreq_240_320sps" ;
+    logical_value, 2, "HVACActParamFreq_320sps" ;
+    logical_value, 3, "HVACActParamFreq_430sps" ;
+    logical_value, 4, "HVACActParamFreq_540sps1" ;
+    logical_value, 5, "HVACActParamFreq_540sps2" ;
+    logical_value, 6, "HVACActParamFreq_Reserved1" ;
+    logical_value, 7, "HVACActParamFreq_Reserved2" ;
+    logical_value, 8, "HVACActParamFreq_Reserved3" ;
+    logical_value, 9, "HVACActParamFreq_Reserved4" ;
+    logical_value, 10, "HVACActParamFreq_Reserved5" ;
+    logical_value, 11, "HVACActParamFreq_Reserved6" ;
+    logical_value, 12, "HVACActParamFreq_Reserved7" ;
+    logical_value, 13, "HVACActParamFreq_Reserved8" ;
+    logical_value, 14, "HVACActParamFreq_Reserved9" ;
+    logical_value, 15, "HVACActParamFreq_Invalid" ;
+  } 
+  HVACActB1Cmd_ParamPosMode {
+    logical_value, 0, "HVACActParamPosMode_SelectionOfFPOS" ;
+    logical_value, 1, "HVACActParamPosMode_SelectionOfInitPOS" ;
+    logical_value, 2, "HVACActParamPosMode_NoSelectedPosition" ;
+    logical_value, 3, "HVACActParamPosMode_Invalid" ;
+  } 
+  HVACActB2Cmd_ConfigDir {
+    logical_value, 0, "HVACActConfigDir_MovermentsInCW" ;
+    logical_value, 1, "HVACActConfigDir_MovementsInCCW" ;
+    logical_value, 2, "HVACActConfigDir_NA1" ;
+    logical_value, 3, "HVACActConfigDir_NA2" ;
+  } 
+  HVACActB2Cmd_ConfigEmRun {
+    logical_value, 0, "HVACActConfigEmRunCmd_EmergencyRunDisabled" ;
+    logical_value, 1, "HVACActConfigEmRunCmd_EmergencyRunEnabled" ;
+    logical_value, 2, "HVACActConfigEmRunCmd_NA1" ;
+    logical_value, 3, "HVACActConfigEmRunCmd_NA2" ;
+  } 
+  HVACActB2Cmd_ConfigEmRunDir {
+    logical_value, 0, "HVACActConfigEmRunDir_EmergencyRunLowEndStop" ;
+    logical_value, 1, "HVACActConfigEmRunDir_EmergencyRunHighEndStop" ;
+    logical_value, 2, "HVACActConfigEmRunDir_NA1" ;
+    logical_value, 3, "HVACActConfigEmRunDir_NA2" ;
+  } 
+  HVACActB2Cmd_ConfigMode {
+    logical_value, 0, "HVACActConfigMode_NormalMode" ;
+    logical_value, 1, "HVACActConfigMode_StopMode" ;
+    logical_value, 2, "HVACActConfigMode_NA1" ;
+    logical_value, 3, "HVACActConfigMode_NA2" ;
+  } 
+  HVACActB2Cmd_CtrlClearFlags {
+    physical_value, 0, 15, 1, 0, "NotApplicable" ;
+  } 
+  HVACActB2Cmd_CtrlLoadData {
+    logical_value, 0, "HVACActCtrlLoadData_DoNotSaveInNVRAM" ;
+    logical_value, 1, "HVACActCtrlLoadData_SaveDataInNVRAM" ;
+    logical_value, 2, "HVACActCtrlLoadData_Reserved" ;
+    logical_value, 3, "HVACActCtrlLoadData_Invalid" ;
+  } 
+  HVACActB2Cmd_CtrlStallEn {
+    logical_value, 0, "HVACActCtrlStallEn_Off" ;
+    logical_value, 1, "HVACActCtrlStallEn_On" ;
+    logical_value, 2, "HVACActCtrlStallEn_NA1" ;
+    logical_value, 3, "HVACActCtrlStallEn_NA2" ;
+  } 
+  HVACActB2Cmd_ParamCoils {
+    logical_value, 0, "HVACActParamCoils_CoilsNotEnergizedWhenActStopped" ;
+    logical_value, 1, "HVACActParamCoils_CoilsNEnergizedWhenActStopped" ;
+    logical_value, 2, "HVACActParamCoils_Reserved" ;
+    logical_value, 3, "HVACActParamCoils_Invalid" ;
+  } 
+  HVACActB2Cmd_ParamFreq {
+    logical_value, 0, "HVACActParamFreq_Stopped" ;
+    logical_value, 1, "HVACActParamFreq_240_320sps" ;
+    logical_value, 2, "HVACActParamFreq_320sps" ;
+    logical_value, 3, "HVACActParamFreq_430sps" ;
+    logical_value, 4, "HVACActParamFreq_540sps1" ;
+    logical_value, 5, "HVACActParamFreq_540sps2" ;
+    logical_value, 6, "HVACActParamFreq_Reserved1" ;
+    logical_value, 7, "HVACActParamFreq_Reserved2" ;
+    logical_value, 8, "HVACActParamFreq_Reserved3" ;
+    logical_value, 9, "HVACActParamFreq_Reserved4" ;
+    logical_value, 10, "HVACActParamFreq_Reserved5" ;
+    logical_value, 11, "HVACActParamFreq_Reserved6" ;
+    logical_value, 12, "HVACActParamFreq_Reserved7" ;
+    logical_value, 13, "HVACActParamFreq_Reserved8" ;
+    logical_value, 14, "HVACActParamFreq_Reserved9" ;
+    logical_value, 15, "HVACActParamFreq_Invalid" ;
+  } 
+  HVACActB2Cmd_ParamPosMode {
+    logical_value, 0, "HVACActParamPosMode_SelectionOfFPOS" ;
+    logical_value, 1, "HVACActParamPosMode_SelectionOfInitPOS" ;
+    logical_value, 2, "HVACActParamPosMode_NoSelectedPosition" ;
+    logical_value, 3, "HVACActParamPosMode_Invalid" ;
+  } 
+  LIN_CTS_B_Solarradiance {
+    physical_value, 0, 31, 50, 0, "W_per_m_squared" ;
+  } 
+  LIN_CTS_B_Status {
+    logical_value, 0, "CTS_Status_SensorOk" ;
+    logical_value, 1, "CTS_Status_SensorDefect" ;
+    logical_value, 2, "CTS_Status_SensorTestInitiated" ;
+    logical_value, 3, "CTS_Status_NA" ;
+  } 
+  LIN_CTS_B_Temperature {
+    physical_value, 0, 4095, 0.1, -80, "DegreeC" ;
+  } 
+  LIN_CTS_B_TempOutofRange {
+    logical_value, 0, "CTS_TempOutofRange_TemperatureValueInRange" ;
+    logical_value, 1, "CTS_TempOutofRange_TemperatureValueOutOfLowRange" ;
+    logical_value, 2, "CTS_TempOutofRange_TemperatureValueOutOfHighRange" ;
+    logical_value, 3, "CTS_TempOutofRange_NA" ;
+  } 
+  LIN_ElecHeatCoolantTemp_Cab {
+    physical_value, 0, 255, 0.5, -20, "DegreeC" ;
+  } 
+  LIN_ElecHeatHVILMonStat_Cab {
+    logical_value, 0, "InactiveActive_Inactive" ;
+    logical_value, 1, "InactiveActive_Active" ;
+    logical_value, 2, "InactiveActive_Error" ;
+    logical_value, 3, "InactiveActive_NotAvailable" ;
+  } 
+  LIN_ElecHeatHVILstat_Cab {
+    logical_value, 0, "ElecHeatHVILstat_NoError" ;
+    logical_value, 1, "ElecHeatHVILstat_HVIL_OutError" ;
+    logical_value, 2, "ElecHeatHVILstat_HVIL_InError" ;
+    logical_value, 3, "ElecHeatHVILstat_HVIL_InOutError" ;
+    logical_value, 4, "ElecHeatHVILstat_Spare1" ;
+    logical_value, 5, "ElecHeatHVILstat_Spare2" ;
+    logical_value, 6, "ElecHeatHVILstat_Error" ;
+    logical_value, 7, "ElecHeatHVILstat_NotAvailable" ;
+  } 
+  LIN_ElecHeatMaxPower_Cab {
+    physical_value, 0, 255, 0.5, 0, "Percent" ;
+  } 
+  LIN_ElecHeatPowerConsum_Cab {
+    physical_value, 0, 255, 0.5, 0, "Percent" ;
+  } 
+  LIN_ElecHeatTargetTempStat_Cab {
+    physical_value, 0, 255, 0.5, -20, "DegreeC" ;
+  } 
+  LIN_ElecHeatTVSDschCrctSts_Cab {
+    logical_value, 0, "InactiveActive_Inactive" ;
+    logical_value, 1, "InactiveActive_Active" ;
+    logical_value, 2, "InactiveActive_Error" ;
+    logical_value, 3, "InactiveActive_NotAvailable" ;
+  } 
+  LIN_ElecHeatTVVoltageStat_Cab {
+    physical_value, 0, 1023, 1, 0, "V" ;
+  } 
+  LIN_HVACActB1Stat_Conf2RunUpDir {
+    logical_value, 0, "HVACActConf2RunUpDir_MovementGoingInSmallerPosition" ;
+    logical_value, 1, "HVACActConf2RunUpDir_MovementGoingInBiggerPosition" ;
+    logical_value, 2, "HVACActConf2RunUpDir_NoPreviousMovementPerformed" ;
+    logical_value, 3, "HVACActConf2RunUpDir_FunctionNotImplemented" ;
+  } 
+  LIN_HVACActB1Stat_Conf2SpecFnc {
+    logical_value, 0, "HVACActConf2SpecFnc_NoSpecialFunctionImplemented" ;
+    logical_value, 1, "HVACActConf2SpecFnc_SpecialFunctionImplemented" ;
+    logical_value, 2, "HVACActConf2SpecFnc_Reserved" ;
+    logical_value, 3, "HVACActConf2SpecFnc_FunctionNotImplemented" ;
+  } 
+  LIN_HVACActB1Stat_Conf2TorqueVar {
+    logical_value, 0, "HVACActConf2TorqueVar_MotorWithoutTorqueCurrentDisabled" ;
+    logical_value, 1, "HVACActConf2TorqueVar_MotorHoldingTorqueCurrentDisabled" ;
+    logical_value, 2, "HVACActConf2TorqueVar_Reserved" ;
+    logical_value, 3, "HVACActConf2TorqueVar_FuntionNotImplemented" ;
+  } 
+  LIN_HVACActB1Stat_ConfigDir {
+    logical_value, 0, "HVACActConfigDir_MovermentsInCW" ;
+    logical_value, 1, "HVACActConfigDir_MovementsInCCW" ;
+    logical_value, 2, "HVACActConfigDir_NA1" ;
+    logical_value, 3, "HVACActConfigDir_NA2" ;
+  } 
+  LIN_HVACActB1Stat_ConfigEmRun {
+    logical_value, 0, "HVACActConfigEmRunStat_EmergencyRun" ;
+    logical_value, 1, "HVACActConfigEmRunStat_NoEmergencyRun" ;
+    logical_value, 2, "HVACActConfigEmRunStat_NA1" ;
+    logical_value, 3, "HVACActConfigEmRunStat_NA2" ;
+  } 
+  LIN_HVACActB1Stat_ConfigEmRunDir {
+    logical_value, 0, "HVACActConfigEmRunDir_EmergencyRunLowEndStop" ;
+    logical_value, 1, "HVACActConfigEmRunDir_EmergencyRunHighEndStop" ;
+    logical_value, 2, "HVACActConfigEmRunDir_NA1" ;
+    logical_value, 3, "HVACActConfigEmRunDir_NA2" ;
+  } 
+  LIN_HVACActB1Stat_ConfigMode {
+    logical_value, 0, "HVACActConfigMode_NormalMode" ;
+    logical_value, 1, "HVACActConfigMode_StopMode" ;
+    logical_value, 2, "HVACActConfigMode_NA1" ;
+    logical_value, 3, "HVACActConfigMode_NA2" ;
+  } 
+  LIN_HVACActB1Stat_ErrorElectr {
+    logical_value, 0, "HVACActErrorElectr_NoCoilsError" ;
+    logical_value, 1, "HVACActErrorElectr_OpenLoadOrShortCircuit" ;
+    logical_value, 2, "HVACActErrorElectr_FlashROMCorruption" ;
+    logical_value, 3, "HVACActErrorElectr_Invalid" ;
+  } 
+  LIN_HVACActB1Stat_ErrorSupply {
+    logical_value, 0, "HVACActErrorSupply_PowerSupplyInDefinedRange" ;
+    logical_value, 1, "HVACActErrorSupply_PowerSupplyUnderDefinedRange" ;
+    logical_value, 2, "HVACActErrorSupply_PowerSupplyOverDefinedRange" ;
+    logical_value, 3, "HVACActErrorSupply_Invalid" ;
+  } 
+  LIN_HVACActB1Stat_ErrorTemp {
+    logical_value, 0, "HVACActErrorTemp_NormalTemperature" ;
+    logical_value, 1, "HVACActErrorTemp_OverTemperature" ;
+    logical_value, 2, "HVACActErrorTemp_Reserved" ;
+    logical_value, 3, "HVACActErrorTemp_Invalid" ;
+  } 
+  LIN_HVACActB1Stat_ParamCoils {
+    logical_value, 0, "HVACActParamCoils_CoilsNotEnergizedWhenActStopped" ;
+    logical_value, 1, "HVACActParamCoils_CoilsNEnergizedWhenActStopped" ;
+    logical_value, 2, "HVACActParamCoils_Reserved" ;
+    logical_value, 3, "HVACActParamCoils_Invalid" ;
+  } 
+  LIN_HVACActB1Stat_ParamFreq {
+    logical_value, 0, "HVACActParamFreq_Stopped" ;
+    logical_value, 1, "HVACActParamFreq_240_320sps" ;
+    logical_value, 2, "HVACActParamFreq_320sps" ;
+    logical_value, 3, "HVACActParamFreq_430sps" ;
+    logical_value, 4, "HVACActParamFreq_540sps1" ;
+    logical_value, 5, "HVACActParamFreq_540sps2" ;
+    logical_value, 6, "HVACActParamFreq_Reserved1" ;
+    logical_value, 7, "HVACActParamFreq_Reserved2" ;
+    logical_value, 8, "HVACActParamFreq_Reserved3" ;
+    logical_value, 9, "HVACActParamFreq_Reserved4" ;
+    logical_value, 10, "HVACActParamFreq_Reserved5" ;
+    logical_value, 11, "HVACActParamFreq_Reserved6" ;
+    logical_value, 12, "HVACActParamFreq_Reserved7" ;
+    logical_value, 13, "HVACActParamFreq_Reserved8" ;
+    logical_value, 14, "HVACActParamFreq_Reserved9" ;
+    logical_value, 15, "HVACActParamFreq_Invalid" ;
+  } 
+  LIN_HVACActB1Stat_ParamPosMode {
+    logical_value, 0, "HVACActParamPosMode_SelectionOfFPOS" ;
+    logical_value, 1, "HVACActParamPosMode_SelectionOfInitPOS" ;
+    logical_value, 2, "HVACActParamPosMode_NoSelectedPosition" ;
+    logical_value, 3, "HVACActParamPosMode_Invalid" ;
+  } 
+  LIN_HVACActB1Stat_StatusEmRun {
+    logical_value, 0, "HVACActStatusEmRun_NoEmergencyRun" ;
+    logical_value, 1, "HVACActStatusEmRun_EmergencyRunOccuredOrInProgress" ;
+    logical_value, 2, "HVACActStatusEmRun_Reserved" ;
+    logical_value, 3, "HVACActStatusEmRun_Invalid" ;
+  } 
+  LIN_HVACActB1Stat_StatusReset {
+    logical_value, 0, "HVACActStatusReset_NoReset" ;
+    logical_value, 1, "HVACActStatusReset_Reset" ;
+    logical_value, 2, "HVACActStatusReset_Reserved" ;
+    logical_value, 3, "HVACActStatusReset_Invalid" ;
+  } 
+  LIN_HVACActB1Stat_StatusStall {
+    logical_value, 0, "HVACActStatusStall_NoEndStopDetected" ;
+    logical_value, 1, "HVACActStatusStall_EndStopDetected" ;
+    logical_value, 2, "HVACActStatusStall_Invalid1" ;
+    logical_value, 3, "HVACActStatusStall_Invalid2" ;
+  } 
+  LIN_HVACActB1Stat_StatusStallEn {
+    logical_value, 0, "HVACActStatusStallEn_StallDetectionDisabled" ;
+    logical_value, 1, "HVACActStatusStallEn_StallDetectionEnabled" ;
+    logical_value, 2, "HVACActStatusStallEn_Reserved" ;
+    logical_value, 3, "HVACActStatusStallEn_Invalid" ;
+  } 
+  LIN_HVACActB2Stat_Conf2RunUpDir {
+    logical_value, 0, "HVACActConf2RunUpDir_MovementGoingInSmallerPosition" ;
+    logical_value, 1, "HVACActConf2RunUpDir_MovementGoingInBiggerPosition" ;
+    logical_value, 2, "HVACActConf2RunUpDir_NoPreviousMovementPerformed" ;
+    logical_value, 3, "HVACActConf2RunUpDir_FunctionNotImplemented" ;
+  } 
+  LIN_HVACActB2Stat_Conf2SpecFnc {
+    logical_value, 0, "HVACActConf2SpecFnc_NoSpecialFunctionImplemented" ;
+    logical_value, 1, "HVACActConf2SpecFnc_SpecialFunctionImplemented" ;
+    logical_value, 2, "HVACActConf2SpecFnc_Reserved" ;
+    logical_value, 3, "HVACActConf2SpecFnc_FunctionNotImplemented" ;
+  } 
+  LIN_HVACActB2Stat_Conf2TorqueVar {
+    logical_value, 0, "HVACActConf2TorqueVar_MotorWithoutTorqueCurrentDisabled" ;
+    logical_value, 1, "HVACActConf2TorqueVar_MotorHoldingTorqueCurrentDisabled" ;
+    logical_value, 2, "HVACActConf2TorqueVar_Reserved" ;
+    logical_value, 3, "HVACActConf2TorqueVar_FuntionNotImplemented" ;
+  } 
+  LIN_HVACActB2Stat_ConfigDir {
+    logical_value, 0, "HVACActConfigDir_MovermentsInCW" ;
+    logical_value, 1, "HVACActConfigDir_MovementsInCCW" ;
+    logical_value, 2, "HVACActConfigDir_NA1" ;
+    logical_value, 3, "HVACActConfigDir_NA2" ;
+  } 
+  LIN_HVACActB2Stat_ConfigEmRun {
+    logical_value, 0, "HVACActConfigEmRunStat_EmergencyRun" ;
+    logical_value, 1, "HVACActConfigEmRunStat_NoEmergencyRun" ;
+    logical_value, 2, "HVACActConfigEmRunStat_NA1" ;
+    logical_value, 3, "HVACActConfigEmRunStat_NA2" ;
+  } 
+  LIN_HVACActB2Stat_ConfigEmRunDir {
+    logical_value, 0, "HVACActConfigEmRunDir_EmergencyRunLowEndStop" ;
+    logical_value, 1, "HVACActConfigEmRunDir_EmergencyRunHighEndStop" ;
+    logical_value, 2, "HVACActConfigEmRunDir_NA1" ;
+    logical_value, 3, "HVACActConfigEmRunDir_NA2" ;
+  } 
+  LIN_HVACActB2Stat_ConfigMode {
+    logical_value, 0, "HVACActConfigMode_NormalMode" ;
+    logical_value, 1, "HVACActConfigMode_StopMode" ;
+    logical_value, 2, "HVACActConfigMode_NA1" ;
+    logical_value, 3, "HVACActConfigMode_NA2" ;
+  } 
+  LIN_HVACActB2Stat_ErrorElectr {
+    logical_value, 0, "HVACActErrorElectr_NoCoilsError" ;
+    logical_value, 1, "HVACActErrorElectr_OpenLoadOrShortCircuit" ;
+    logical_value, 2, "HVACActErrorElectr_FlashROMCorruption" ;
+    logical_value, 3, "HVACActErrorElectr_Invalid" ;
+  } 
+  LIN_HVACActB2Stat_ErrorSupply {
+    logical_value, 0, "HVACActErrorSupply_PowerSupplyInDefinedRange" ;
+    logical_value, 1, "HVACActErrorSupply_PowerSupplyUnderDefinedRange" ;
+    logical_value, 2, "HVACActErrorSupply_PowerSupplyOverDefinedRange" ;
+    logical_value, 3, "HVACActErrorSupply_Invalid" ;
+  } 
+  LIN_HVACActB2Stat_ErrorTemp {
+    logical_value, 0, "HVACActErrorTemp_NormalTemperature" ;
+    logical_value, 1, "HVACActErrorTemp_OverTemperature" ;
+    logical_value, 2, "HVACActErrorTemp_Reserved" ;
+    logical_value, 3, "HVACActErrorTemp_Invalid" ;
+  } 
+  LIN_HVACActB2Stat_ParamCoils {
+    logical_value, 0, "HVACActParamCoils_CoilsNotEnergizedWhenActStopped" ;
+    logical_value, 1, "HVACActParamCoils_CoilsNEnergizedWhenActStopped" ;
+    logical_value, 2, "HVACActParamCoils_Reserved" ;
+    logical_value, 3, "HVACActParamCoils_Invalid" ;
+  } 
+  LIN_HVACActB2Stat_ParamFreq {
+    logical_value, 0, "HVACActParamFreq_Stopped" ;
+    logical_value, 1, "HVACActParamFreq_240_320sps" ;
+    logical_value, 2, "HVACActParamFreq_320sps" ;
+    logical_value, 3, "HVACActParamFreq_430sps" ;
+    logical_value, 4, "HVACActParamFreq_540sps1" ;
+    logical_value, 5, "HVACActParamFreq_540sps2" ;
+    logical_value, 6, "HVACActParamFreq_Reserved1" ;
+    logical_value, 7, "HVACActParamFreq_Reserved2" ;
+    logical_value, 8, "HVACActParamFreq_Reserved3" ;
+    logical_value, 9, "HVACActParamFreq_Reserved4" ;
+    logical_value, 10, "HVACActParamFreq_Reserved5" ;
+    logical_value, 11, "HVACActParamFreq_Reserved6" ;
+    logical_value, 12, "HVACActParamFreq_Reserved7" ;
+    logical_value, 13, "HVACActParamFreq_Reserved8" ;
+    logical_value, 14, "HVACActParamFreq_Reserved9" ;
+    logical_value, 15, "HVACActParamFreq_Invalid" ;
+  } 
+  LIN_HVACActB2Stat_ParamPosMode {
+    logical_value, 0, "HVACActParamPosMode_SelectionOfFPOS" ;
+    logical_value, 1, "HVACActParamPosMode_SelectionOfInitPOS" ;
+    logical_value, 2, "HVACActParamPosMode_NoSelectedPosition" ;
+    logical_value, 3, "HVACActParamPosMode_Invalid" ;
+  } 
+  LIN_HVACActB2Stat_StatusEmRun {
+    logical_value, 0, "HVACActStatusEmRun_NoEmergencyRun" ;
+    logical_value, 1, "HVACActStatusEmRun_EmergencyRunOccuredOrInProgress" ;
+    logical_value, 2, "HVACActStatusEmRun_Reserved" ;
+    logical_value, 3, "HVACActStatusEmRun_Invalid" ;
+  } 
+  LIN_HVACActB2Stat_StatusReset {
+    logical_value, 0, "HVACActStatusReset_NoReset" ;
+    logical_value, 1, "HVACActStatusReset_Reset" ;
+    logical_value, 2, "HVACActStatusReset_Reserved" ;
+    logical_value, 3, "HVACActStatusReset_Invalid" ;
+  } 
+  LIN_HVACActB2Stat_StatusStall {
+    logical_value, 0, "HVACActStatusStall_NoEndStopDetected" ;
+    logical_value, 1, "HVACActStatusStall_EndStopDetected" ;
+    logical_value, 2, "HVACActStatusStall_Invalid1" ;
+    logical_value, 3, "HVACActStatusStall_Invalid2" ;
+  } 
+  LIN_HVACActB2Stat_StatusStallEn {
+    logical_value, 0, "HVACActStatusStallEn_StallDetectionDisabled" ;
+    logical_value, 1, "HVACActStatusStallEn_StallDetectionEnabled" ;
+    logical_value, 2, "HVACActStatusStallEn_Reserved" ;
+    logical_value, 3, "HVACActStatusStallEn_Invalid" ;
+  } 
+}
+
+Signal_representation {
+  Comp_FaultClearRq: Comp_FaultClearRq ;
+  Comp_HvDischargeRq: Comp_HvDischargeRq ;
+  Comp_HvInterlockRq: Comp_HvInterlockRq ;
+  Comp_HvInterlockStat: Comp_HvInterlockStat ;
+  Comp_OnRq: Comp_OnRq ;
+  Comp_OprtnStat: Comp_OprtnStat ;
+  CompSpd_Est: CompSpd_Est ;
+  CompSpd_TargetCmd: CompSpd_TargetCmd ;
+  CTS_B_Downtime: CTS_B_Downtime ;
+  CTS_B_DrvWindowStat: CTS_B_DrvWindowStat ;
+  CTS_B_GlazingType: CTS_B_GlazingType ;
+  CTS_B_IradianceDrvSide: CTS_B_IradianceDrvSide ;
+  CTS_B_IradiancePassSide: CTS_B_IradiancePassSide ;
+  CTS_B_PassWindowStat: CTS_B_PassWindowStat ;
+  CTS_B_RearDrvWindowStat: CTS_B_RearDrvWindowStat ;
+  CTS_B_RearPassWindowStat: CTS_B_RearPassWindowStat ;
+  CTS_B_SunBlindStat: CTS_B_SunBlindStat ;
+  CTS_B_SunroofStat: CTS_B_SunroofStat ;
+  DiagInfo_TVECH_C: DiagInfo_TVECH_C ;
+  EAC_HV_Volt: EAC_HV_Volt ;
+  EAC_HVInputCurr: EAC_HVInputCurr ;
+  EAC_HVPhaseCurr: EAC_HVPhaseCurr ;
+  EAC_InvrtTemp: EAC_InvrtTemp ;
+  ElecHeatMaxPwrCmd_Cab: ElecHeatMaxPwrCmd_Cab ;
+  ElecHeatReqHVILMon_Cab: ElecHeatReqHVILMon_Cab ;
+  ElecHeatReqTVSDschrg_Cab: ElecHeatReqTVSDschrg_Cab ;
+  ElecHeatTargetTempCmd_Cab: ElecHeatTargetTempCmd_Cab ;
+  HVACActB1Cmd_ConfigDir: HVACActB1Cmd_ConfigDir ;
+  HVACActB1Cmd_ConfigEmRun: HVACActB1Cmd_ConfigEmRun ;
+  HVACActB1Cmd_ConfigEmRunDir: HVACActB1Cmd_ConfigEmRunDir ;
+  HVACActB1Cmd_ConfigMode: HVACActB1Cmd_ConfigMode ;
+  HVACActB1Cmd_CtrlClearFlags: HVACActB1Cmd_CtrlClearFlags ;
+  HVACActB1Cmd_CtrlLoadData: HVACActB1Cmd_CtrlLoadData ;
+  HVACActB1Cmd_CtrlStallEn: HVACActB1Cmd_CtrlStallEn ;
+  HVACActB1Cmd_ParamCoils: HVACActB1Cmd_ParamCoils ;
+  HVACActB1Cmd_ParamFreq: HVACActB1Cmd_ParamFreq ;
+  HVACActB1Cmd_ParamPosMode: HVACActB1Cmd_ParamPosMode ;
+  HVACActB2Cmd_ConfigDir: HVACActB2Cmd_ConfigDir ;
+  HVACActB2Cmd_ConfigEmRun: HVACActB2Cmd_ConfigEmRun ;
+  HVACActB2Cmd_ConfigEmRunDir: HVACActB2Cmd_ConfigEmRunDir ;
+  HVACActB2Cmd_ConfigMode: HVACActB2Cmd_ConfigMode ;
+  HVACActB2Cmd_CtrlClearFlags: HVACActB2Cmd_CtrlClearFlags ;
+  HVACActB2Cmd_CtrlLoadData: HVACActB2Cmd_CtrlLoadData ;
+  HVACActB2Cmd_CtrlStallEn: HVACActB2Cmd_CtrlStallEn ;
+  HVACActB2Cmd_ParamCoils: HVACActB2Cmd_ParamCoils ;
+  HVACActB2Cmd_ParamFreq: HVACActB2Cmd_ParamFreq ;
+  HVACActB2Cmd_ParamPosMode: HVACActB2Cmd_ParamPosMode ;
+  LIN_CTS_B_Solarradiance: LIN_CTS_B_Solarradiance ;
+  LIN_CTS_B_Status: LIN_CTS_B_Status ;
+  LIN_CTS_B_Temperature: LIN_CTS_B_Temperature ;
+  LIN_CTS_B_TempOutofRange: LIN_CTS_B_TempOutofRange ;
+  LIN_ElecHeatCoolantTemp_Cab: LIN_ElecHeatCoolantTemp_Cab ;
+  LIN_ElecHeatHVILMonStat_Cab: LIN_ElecHeatHVILMonStat_Cab ;
+  LIN_ElecHeatHVILstat_Cab: LIN_ElecHeatHVILstat_Cab ;
+  LIN_ElecHeatMaxPower_Cab: LIN_ElecHeatMaxPower_Cab ;
+  LIN_ElecHeatPowerConsum_Cab: LIN_ElecHeatPowerConsum_Cab ;
+  LIN_ElecHeatTargetTempStat_Cab: LIN_ElecHeatTargetTempStat_Cab ;
+  LIN_ElecHeatTVSDschCrctSts_Cab: LIN_ElecHeatTVSDschCrctSts_Cab ;
+  LIN_ElecHeatTVVoltageStat_Cab: LIN_ElecHeatTVVoltageStat_Cab ;
+  LIN_HVACActB1Stat_Conf2RunUpDir: LIN_HVACActB1Stat_Conf2RunUpDir ;
+  LIN_HVACActB1Stat_Conf2SpecFnc: LIN_HVACActB1Stat_Conf2SpecFnc ;
+  LIN_HVACActB1Stat_Conf2TorqueVar: LIN_HVACActB1Stat_Conf2TorqueVar ;
+  LIN_HVACActB1Stat_ConfigDir: LIN_HVACActB1Stat_ConfigDir ;
+  LIN_HVACActB1Stat_ConfigEmRun: LIN_HVACActB1Stat_ConfigEmRun ;
+  LIN_HVACActB1Stat_ConfigEmRunDir: LIN_HVACActB1Stat_ConfigEmRunDir ;
+  LIN_HVACActB1Stat_ConfigMode: LIN_HVACActB1Stat_ConfigMode ;
+  LIN_HVACActB1Stat_ErrorElectr: LIN_HVACActB1Stat_ErrorElectr ;
+  LIN_HVACActB1Stat_ErrorSupply: LIN_HVACActB1Stat_ErrorSupply ;
+  LIN_HVACActB1Stat_ErrorTemp: LIN_HVACActB1Stat_ErrorTemp ;
+  LIN_HVACActB1Stat_ParamCoils: LIN_HVACActB1Stat_ParamCoils ;
+  LIN_HVACActB1Stat_ParamFreq: LIN_HVACActB1Stat_ParamFreq ;
+  LIN_HVACActB1Stat_ParamPosMode: LIN_HVACActB1Stat_ParamPosMode ;
+  LIN_HVACActB1Stat_StatusEmRun: LIN_HVACActB1Stat_StatusEmRun ;
+  LIN_HVACActB1Stat_StatusReset: LIN_HVACActB1Stat_StatusReset ;
+  LIN_HVACActB1Stat_StatusStall: LIN_HVACActB1Stat_StatusStall ;
+  LIN_HVACActB1Stat_StatusStallEn: LIN_HVACActB1Stat_StatusStallEn ;
+  LIN_HVACActB2Stat_Conf2RunUpDir: LIN_HVACActB2Stat_Conf2RunUpDir ;
+  LIN_HVACActB2Stat_Conf2SpecFnc: LIN_HVACActB2Stat_Conf2SpecFnc ;
+  LIN_HVACActB2Stat_Conf2TorqueVar: LIN_HVACActB2Stat_Conf2TorqueVar ;
+  LIN_HVACActB2Stat_ConfigDir: LIN_HVACActB2Stat_ConfigDir ;
+  LIN_HVACActB2Stat_ConfigEmRun: LIN_HVACActB2Stat_ConfigEmRun ;
+  LIN_HVACActB2Stat_ConfigEmRunDir: LIN_HVACActB2Stat_ConfigEmRunDir ;
+  LIN_HVACActB2Stat_ConfigMode: LIN_HVACActB2Stat_ConfigMode ;
+  LIN_HVACActB2Stat_ErrorElectr: LIN_HVACActB2Stat_ErrorElectr ;
+  LIN_HVACActB2Stat_ErrorSupply: LIN_HVACActB2Stat_ErrorSupply ;
+  LIN_HVACActB2Stat_ErrorTemp: LIN_HVACActB2Stat_ErrorTemp ;
+  LIN_HVACActB2Stat_ParamCoils: LIN_HVACActB2Stat_ParamCoils ;
+  LIN_HVACActB2Stat_ParamFreq: LIN_HVACActB2Stat_ParamFreq ;
+  LIN_HVACActB2Stat_ParamPosMode: LIN_HVACActB2Stat_ParamPosMode ;
+  LIN_HVACActB2Stat_StatusEmRun: LIN_HVACActB2Stat_StatusEmRun ;
+  LIN_HVACActB2Stat_StatusReset: LIN_HVACActB2Stat_StatusReset ;
+  LIN_HVACActB2Stat_StatusStall: LIN_HVACActB2Stat_StatusStall ;
+  LIN_HVACActB2Stat_StatusStallEn: LIN_HVACActB2Stat_StatusStallEn ;
+}
+
