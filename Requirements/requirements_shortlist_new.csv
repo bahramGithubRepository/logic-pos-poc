@@ -1,25 +1,4 @@
 ﻿title,source,chunk_id
-Max Defrost HVAC Actuators Request,EMD_MaxDefrost.pdf,req_section_1
-Max Defrost HVAC Actuators Feedback Status,EMD_MaxDefrost.pdf,req_section_2
-Max Defrost Availability (ICE),EMD_MaxDefrost.pdf,req_section_3
-Max Defrost Availability (BEV),EMD_MaxDefrost.pdf,req_section_4
-Max Defrost Activation by Soft Button,EMD_MaxDefrost.pdf,req_section_5
-Max Defrost Activation by Hard Button,EMD_MaxDefrost.pdf,req_section_6
-Max Defrost Activation - Blower Speed Setting,EMD_MaxDefrost.pdf,req_section_7
+Max Defrost Activation - Outside Only Recirculation,EMD_MaxDefrost.pdf,req_section_11
 Max Defrost Activation - Air Distribution Defrost Mode Setting,EMD_MaxDefrost.pdf,req_section_8
 Max Defrost Activation - Maximum Heat Level Setting,EMD_MaxDefrost.pdf,req_section_9
-Max Defrost Activation - Manual Recirculation Off,EMD_MaxDefrost.pdf,req_section_10
-Max Defrost Activation - Outside Only Recirculation,EMD_MaxDefrost.pdf,req_section_11
-Max Defrost Activation - AC,EMD_MaxDefrost.pdf,req_section_12
-Max Defrost Deactivation - Max Defrost Button and then Restoring Manual Settings,EMD_MaxDefrost.pdf,req_section_13
-Max Defrost Deactivation - Vehicle Mode Leaving Running and Restoring Manual Settings,EMD_MaxDefrost.pdf,req_section_14
-Max Defrost Deactivation - Air Distribution Changing,EMD_MaxDefrost.pdf,req_section_15
-Max Defrost - Keep Active at Blower Speed Setting Manual Change,EMD_MaxDefrost.pdf,req_section_16
-Max Defrost - Keep Active at Heat Level Manual Change,EMD_MaxDefrost.pdf,req_section_17
-Max Defrost - Keep Active at AC Manual Setting,EMD_MaxDefrost.pdf,req_section_18
-Max Defrost - Keep Active at Manual Recirculation,EMD_MaxDefrost.pdf,req_section_19
-- Max Defrost - Duration url:swap://setoolgtt.srv.volvo.com:3001/x040000002C349313,EMD_MaxDefrost.pdf,req_section_20
-Max Defrost - Setting Memory,EMD_MaxDefrost.pdf,req_section_21
-Max Defrost Memory - Climate Power On,EMD_MaxDefrost.pdf,req_section_22
-Max Defrost - Transition from lower vehicle modes to running,EMD_MaxDefrost.pdf,req_section_23
-Max Defrost - Report Status,EMD_MaxDefrost.pdf,req_section_24
