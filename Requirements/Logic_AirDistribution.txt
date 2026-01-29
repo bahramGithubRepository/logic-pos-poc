@@ -1,0 +1,50 @@
+DOCUMENT_TYPE: Logic Rule
+SYSTEM: Climate Control (CCM)
+COMPONENT: Air Distribution Flaps (Kinematic)
+VERSION: V07 (2025/03/05)
+SOURCE_FILE: Volvo MD - Kinematic Air Distribution.jpg
+
+DESCRIPTION:
+This logic defines the opening percentage of Defrost, Foot, and Center Vent flaps based on the Actuator Rotation percentage (0% to 100%).
+
+LOGIC_RULES:
+1. **Defrost Mode (0% - 5% Rotation):**
+   - Flap_Defrost: 100% (Open)
+   - Flap_Foot: 0% (Closed)
+   - Flap_Center_Vent: 0% (Closed)
+
+2. **Transition to Foot (5% - 25% Rotation):**
+   - Flap_Defrost decreases linearly from 100% to 0%.
+   - Flap_Foot increases linearly from 0% to 100%.
+   - Flap_Center_Vent remains closed (0%).
+
+3. **Foot Mode (25% - 35% Rotation):**
+   - Flap_Defrost: 0% (Closed)
+   - Flap_Foot: 100% (Open)
+   - Flap_Center_Vent: 0% (Closed)
+
+4. **Transition to Vent (35% - 55% Rotation):**
+   - Flap_Defrost remains closed (0%).
+   - Flap_Foot decreases linearly from 100% to 0%.
+   - Flap_Center_Vent increases linearly from 0% to 100%.
+
+5. **Vent Mode (55% - 65% Rotation):**
+   - Flap_Defrost: 0% (Closed)
+   - Flap_Foot: 0% (Closed)
+   - Flap_Center_Vent: 100% (Open)
+
+6. **Transition to Defrost (65% - 85% Rotation):**
+   - Flap_Defrost increases linearly from 0% to 100%.
+   - Flap_Center_Vent decreases linearly from 100% to 0%.
+   - Flap_Foot temporarily opens to ~80% peak at 87% rotation (Hump), then closes.
+
+7. **Return to Defrost (95% - 100% Rotation):**
+   - Flap_Defrost: 100% (Open)
+   - Flap_Foot: 0% (Closed)
+   - Flap_Center_Vent: 0% (Closed)
+
+LOOKUP_TABLE_REFERENCE:
+- Rotation 0%: Defrost=100, Foot=0, Vent=0
+- Rotation 30%: Defrost=0, Foot=100, Vent=0
+- Rotation 60%: Defrost=0, Foot=0, Vent=100
+- Rotation 90%: Defrost=100, Foot=~75, Vent=0
