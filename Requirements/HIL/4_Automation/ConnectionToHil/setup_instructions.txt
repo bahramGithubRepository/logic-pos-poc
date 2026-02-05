@@ -1,0 +1,24 @@
+# Instructions to set up Python virtual environment and install requirements
+
+1. Open PowerShell and navigate to your project directory:
+   cd "c:\Hilproject\hil-lab-prepration\4_Automation\ConnectionToHil"
+
+2. Create a new virtual environment named 'venv':
+   python -m venv venv
+
+3. Activate the virtual environment:
+   .\venv\Scripts\Activate
+
+4. Install the required packages from requirements.txt:
+   pip install -r requirements.txt
+
+5. Set PYTHONPATH so pytest can find the modules
+   set PYTHONPATH=%cd%
+
+After these steps, your environment will be ready to run your project!
+
+Note ! If you have installed gitlab runner on your computer and gitlab has run Veristand
+make sure to terminate Veristand (background process) through Task Manager. Or vice versa
+
+
+TODO : convert it to md file and add Instructions for installing gitlab runner
