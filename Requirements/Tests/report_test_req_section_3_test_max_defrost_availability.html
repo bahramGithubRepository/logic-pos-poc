@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Report - Max Defrost Availability in Valid Vehicle Modes (DRY RUN)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .summary-card h3 {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .summary-card .value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .summary-card.status {
+            border-left-color: #28a745;
+        }
+        
+        .summary-card.status .value {
+            color: #28a745;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .step {
+            margin-bottom: 30px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .step-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .step-header h3 {
+            color: #333;
+            font-size: 18px;
+        }
+        
+        .step-time {
+            color: #6c757d;
+            font-size: 13px;
+        }
+        
+        .step-body {
+            padding: 20px;
+        }
+        
+        .step-description {
+            color: #6c757d;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        
+        .sets, .checks {
+            margin-top: 15px;
+        }
+        
+        .sets h4, .checks h4 {
+            font-size: 14px;
+            color: #495057;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .set-item {
+            background: #e7f3ff;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            border-left: 3px solid #0066cc;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        
+        .set-item .signal {
+            font-weight: bold;
+            color: #0066cc;
+        }
+        
+        .check-item {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            border-left: 3px solid;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 15px;
+            align-items: center;
+            font-size: 13px;
+        }
+        
+        .check-item.passed {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+        
+        .check-item.failed {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        
+        .check-signal {
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .check-expected, .check-actual {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .check-status {
+            text-align: right;
+            font-weight: bold;
+        }
+        
+        .check-item.passed .check-status {
+            color: #28a745;
+        }
+        
+        .check-item.failed .check-status {
+            color: #dc3545;
+        }
+        
+        .notes {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff3cd;
+            border-left: 3px solid #ffc107;
+            border-radius: 4px;
+        }
+        
+        .notes h4 {
+            font-size: 14px;
+            color: #856404;
+            margin-bottom: 8px;
+        }
+        
+        .note-item {
+            color: #856404;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+        
+        .footer {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            text-align: center;
+            color: #6c757d;
+            font-size: 13px;
+        }
+        
+        @media print {
+            body {
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Max Defrost Availability in Valid Vehicle Modes (DRY RUN)</h1>
+            <p>Verify that the Max Defrost function is available for activation when the vehicle is in PreRunning, Cranking, or Running modes.</p>
+        </div>
+        
+        <div class="summary">
+            <div class="summary-card status">
+                <h3>Status</h3>
+                <div class="value">PASSED</div>
+            </div>
+            
+            <div class="summary-card">
+                <h3>Duration</h3>
+                <div class="value">7.19s</div>
+            </div>
+            
+            <div class="summary-card">
+                <h3>Total Checks</h3>
+                <div class="value">6</div>
+            </div>
+            
+            <div class="summary-card">
+                <h3>Passed</h3>
+                <div class="value" style="color: #28a745;">6</div>
+            </div>
+            
+            <div class="summary-card">
+                <h3>Failed</h3>
+                <div class="value" style="color: #dc3545;">0</div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <h2 style="margin-bottom: 20px; color: #333;">Test Execution Details</h2>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Step 0: Set Pre-Conditions (DRY RUN)</h3>
+                    <span class="step-time">15:59:59.134</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Ensure Max Defrost is inactive and vehicle in a neutral mode.</p>
+
+                    <div class="sets">
+                        <h4>Signal Sets</h4>
+
+                        <div class="set-item">
+                            <span class="signal">VehicleMode</span> = 6
+                        </div>
+
+                        <div class="set-item">
+                            <span class="signal">MaxDefrostRequest</span> = 0
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• DRY RUN: VehicleMode would be set to 6</div>
+
+                        <div class="note-item">• DRY RUN: MaxDefrostRequest would be set to 0</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Step 0a: Verify Pre-Conditions (DRY RUN)</h3>
+                    <span class="step-time">15:59:59.644</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Simulate expected responses for initial state.</p>
+
+                    <div class="checks">
+                        <h4>Signal Checks</h4>
+
+                        <div class="check-item passed">
+                            <div class="check-signal">MaxDefrostStatus</div>
+                            <div class="check-expected">Expected: 0 (±0.1)</div>
+                            <div class="check-actual">Actual: 0</div>
+                            <div class="check-status">✓ PASS</div>
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• WARNING: Signal 'MaxDefrostRequest' not found</div>
+
+                        <div class="note-item">• Actual hardware value: 0.0 (not changed in dry run)</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Step 1: Set VehicleMode to PreRunning</h3>
+                    <span class="step-time">15:59:59.757</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Set VehicleMode to 1 (PreRunning).</p>
+
+                    <div class="sets">
+                        <h4>Signal Sets</h4>
+
+                        <div class="set-item">
+                            <span class="signal">VehicleMode</span> = 1
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• DRY RUN: VehicleMode would be set to 1</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Step 2: Set MaxDefrostRequest to TRUE (PreRunning)</h3>
+                    <span class="step-time">16:00:00.259</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Trigger Max Defrost activation.</p>
+
+                    <div class="sets">
+                        <h4>Signal Sets</h4>
+
+                        <div class="set-item">
+                            <span class="signal">MaxDefrostRequest</span> = 1
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• DRY RUN: MaxDefrostRequest would be set to 1</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Check 2a: Verify MaxDefrostStatus (PreRunning)</h3>
+                    <span class="step-time">16:00:01.268</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Expected Outcome: MaxDefrostStatus == Active.</p>
+
+                    <div class="checks">
+                        <h4>Signal Checks</h4>
+
+                        <div class="check-item passed">
+                            <div class="check-signal">MaxDefrostStatus</div>
+                            <div class="check-expected">Expected: 1 (±0.1)</div>
+                            <div class="check-actual">Actual: 1</div>
+                            <div class="check-status">✓ PASS</div>
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• Actual hardware value: 0.0 (not changed in dry run)</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Step 3: Set MaxDefrostRequest to FALSE (PreRunning)</h3>
+                    <span class="step-time">16:00:01.270</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Deactivate Max Defrost.</p>
+
+                    <div class="sets">
+                        <h4>Signal Sets</h4>
+
+                        <div class="set-item">
+                            <span class="signal">MaxDefrostRequest</span> = 0
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• DRY RUN: MaxDefrostRequest would be set to 0</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Check 3a: Verify MaxDefrostStatus Inactive (PreRunning)</h3>
+                    <span class="step-time">16:00:02.277</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Expected Outcome: MaxDefrostStatus == Inactive.</p>
+
+                    <div class="checks">
+                        <h4>Signal Checks</h4>
+
+                        <div class="check-item passed">
+                            <div class="check-signal">MaxDefrostStatus</div>
+                            <div class="check-expected">Expected: 0 (±0.1)</div>
+                            <div class="check-actual">Actual: 0</div>
+                            <div class="check-status">✓ PASS</div>
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• Actual hardware value: 0.0 (not changed in dry run)</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Step 4: Set VehicleMode to Cranking</h3>
+                    <span class="step-time">16:00:02.278</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Set VehicleMode to 2 (Cranking).</p>
+
+                    <div class="sets">
+                        <h4>Signal Sets</h4>
+
+                        <div class="set-item">
+                            <span class="signal">VehicleMode</span> = 2
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• DRY RUN: VehicleMode would be set to 2</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Step 5: Set MaxDefrostRequest to TRUE (Cranking)</h3>
+                    <span class="step-time">16:00:02.783</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Trigger Max Defrost activation.</p>
+
+                    <div class="sets">
+                        <h4>Signal Sets</h4>
+
+                        <div class="set-item">
+                            <span class="signal">MaxDefrostRequest</span> = 1
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• DRY RUN: MaxDefrostRequest would be set to 1</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Check 5a: Verify MaxDefrostStatus (Cranking)</h3>
+                    <span class="step-time">16:00:03.806</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Expected Outcome: MaxDefrostStatus == Active.</p>
+
+                    <div class="checks">
+                        <h4>Signal Checks</h4>
+
+                        <div class="check-item passed">
+                            <div class="check-signal">MaxDefrostStatus</div>
+                            <div class="check-expected">Expected: 1 (±0.1)</div>
+                            <div class="check-actual">Actual: 1</div>
+                            <div class="check-status">✓ PASS</div>
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• Actual hardware value: 0.0 (not changed in dry run)</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Step 6: Set MaxDefrostRequest to FALSE (Cranking)</h3>
+                    <span class="step-time">16:00:03.808</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Deactivate Max Defrost.</p>
+
+                    <div class="sets">
+                        <h4>Signal Sets</h4>
+
+                        <div class="set-item">
+                            <span class="signal">MaxDefrostRequest</span> = 0
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• DRY RUN: MaxDefrostRequest would be set to 0</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Check 6a: Verify MaxDefrostStatus Inactive (Cranking)</h3>
+                    <span class="step-time">16:00:04.813</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Expected Outcome: MaxDefrostStatus == Inactive.</p>
+
+                    <div class="checks">
+                        <h4>Signal Checks</h4>
+
+                        <div class="check-item passed">
+                            <div class="check-signal">MaxDefrostStatus</div>
+                            <div class="check-expected">Expected: 0 (±0.1)</div>
+                            <div class="check-actual">Actual: 0</div>
+                            <div class="check-status">✓ PASS</div>
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• Actual hardware value: 0.0 (not changed in dry run)</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Step 7: Set VehicleMode to Running</h3>
+                    <span class="step-time">16:00:04.814</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Set VehicleMode to 3 (Running).</p>
+
+                    <div class="sets">
+                        <h4>Signal Sets</h4>
+
+                        <div class="set-item">
+                            <span class="signal">VehicleMode</span> = 3
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• DRY RUN: VehicleMode would be set to 3</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Step 8: Set MaxDefrostRequest to TRUE (Running)</h3>
+                    <span class="step-time">16:00:05.315</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Trigger Max Defrost activation.</p>
+
+                    <div class="sets">
+                        <h4>Signal Sets</h4>
+
+                        <div class="set-item">
+                            <span class="signal">MaxDefrostRequest</span> = 1
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• DRY RUN: MaxDefrostRequest would be set to 1</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Check 8a: Verify MaxDefrostStatus (Running)</h3>
+                    <span class="step-time">16:00:06.322</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Expected Outcome: MaxDefrostStatus == Active.</p>
+
+                    <div class="checks">
+                        <h4>Signal Checks</h4>
+
+                        <div class="check-item passed">
+                            <div class="check-signal">MaxDefrostStatus</div>
+                            <div class="check-expected">Expected: 1 (±0.1)</div>
+                            <div class="check-actual">Actual: 1</div>
+                            <div class="check-status">✓ PASS</div>
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• Actual hardware value: 0.0 (not changed in dry run)</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="footer">
+            Generated on 2026-02-11 16:00:06 | 
+            Test started at 2026-02-11 15:59:59 | 
+            Duration: 7.19s
+        </div>
+    </div>
+</body>
+</html>
