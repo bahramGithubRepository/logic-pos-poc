@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Report - Max Defrost Test - DRY RUN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .summary-card h3 {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .summary-card .value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .summary-card.status {
+            border-left-color: #28a745;
+        }
+        
+        .summary-card.status .value {
+            color: #28a745;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .step {
+            margin-bottom: 30px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .step-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .step-header h3 {
+            color: #333;
+            font-size: 18px;
+        }
+        
+        .step-time {
+            color: #6c757d;
+            font-size: 13px;
+        }
+        
+        .step-body {
+            padding: 20px;
+        }
+        
+        .step-description {
+            color: #6c757d;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        
+        .sets, .checks {
+            margin-top: 15px;
+        }
+        
+        .sets h4, .checks h4 {
+            font-size: 14px;
+            color: #495057;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .set-item {
+            background: #e7f3ff;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            border-left: 3px solid #0066cc;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        
+        .set-item .signal {
+            font-weight: bold;
+            color: #0066cc;
+        }
+        
+        .check-item {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            border-left: 3px solid;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 15px;
+            align-items: center;
+            font-size: 13px;
+        }
+        
+        .check-item.passed {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+        
+        .check-item.failed {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        
+        .check-signal {
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .check-expected, .check-actual {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .check-status {
+            text-align: right;
+            font-weight: bold;
+        }
+        
+        .check-item.passed .check-status {
+            color: #28a745;
+        }
+        
+        .check-item.failed .check-status {
+            color: #dc3545;
+        }
+        
+        .notes {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff3cd;
+            border-left: 3px solid #ffc107;
+            border-radius: 4px;
+        }
+        
+        .notes h4 {
+            font-size: 14px;
+            color: #856404;
+            margin-bottom: 8px;
+        }
+        
+        .note-item {
+            color: #856404;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+        
+        .footer {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            text-align: center;
+            color: #6c757d;
+            font-size: 13px;
+        }
+        
+        @media print {
+            body {
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Max Defrost Test - DRY RUN</h1>
+            <p>Simulation mode - validates test logic without controlling hardware</p>
+        </div>
+        
+        <div class="summary">
+            <div class="summary-card status">
+                <h3>Status</h3>
+                <div class="value">PASSED</div>
+            </div>
+            
+            <div class="summary-card">
+                <h3>Duration</h3>
+                <div class="value">1.96s</div>
+            </div>
+            
+            <div class="summary-card">
+                <h3>Total Checks</h3>
+                <div class="value">14</div>
+            </div>
+            
+            <div class="summary-card">
+                <h3>Passed</h3>
+                <div class="value" style="color: #28a745;">14</div>
+            </div>
+            
+            <div class="summary-card">
+                <h3>Failed</h3>
+                <div class="value" style="color: #dc3545;">0</div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <h2 style="margin-bottom: 20px; color: #333;">Test Execution Details</h2>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Step 0: Read Current State</h3>
+                    <span class="step-time">09:59:31.442</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Capture current hardware values before dry run</p>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• Current MaxDefrostStatus = 0.0</div>
+
+                        <div class="note-item">• Current HVACBlowerLevelStat_BlowerLevel = 1.0</div>
+
+                        <div class="note-item">• Current ClimateAirDistStatus_Defrost = 0.0</div>
+
+                        <div class="note-item">• Current ClimateAirDistStatus_Floor = 1.0</div>
+
+                        <div class="note-item">• Current ClimateAirDistStatus_Vent = 1.0</div>
+
+                        <div class="note-item">• Current AirRecirculationStatus = 0.0</div>
+
+                        <div class="note-item">• Current ClimatePowerStatus = 1.0</div>
+
+                        <div class="note-item">• Current CabHeatManStatus = 10.0</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Step 1: Set Pre-Conditions (DRY RUN)</h3>
+                    <span class="step-time">09:59:31.550</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Show what initial setup WOULD be</p>
+
+                    <div class="sets">
+                        <h4>Signal Sets</h4>
+
+                        <div class="set-item">
+                            <span class="signal">VehicleMode</span> = 6
+                        </div>
+
+                        <div class="set-item">
+                            <span class="signal">ClimatePowerRequest</span> = 1
+                        </div>
+
+                        <div class="set-item">
+                            <span class="signal">MaxDefrostRequest</span> = 0
+                        </div>
+
+                        <div class="set-item">
+                            <span class="signal">ClimateAirDistRequest_Defrost</span> = 0
+                        </div>
+
+                        <div class="set-item">
+                            <span class="signal">ClimateAirDistRequest_Floor</span> = 1
+                        </div>
+
+                        <div class="set-item">
+                            <span class="signal">ClimateAirDistRequest_Vent</span> = 1
+                        </div>
+
+                        <div class="set-item">
+                            <span class="signal">AirRecirculationRequest</span> = 1
+                        </div>
+
+                        <div class="set-item">
+                            <span class="signal">HVACBlowerRequest</span> = 1
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• DRY RUN: VehicleMode would be set to 6</div>
+
+                        <div class="note-item">• DRY RUN: ClimatePowerRequest would be set to 1</div>
+
+                        <div class="note-item">• DRY RUN: MaxDefrostRequest would be set to 0</div>
+
+                        <div class="note-item">• DRY RUN: ClimateAirDistRequest_Defrost would be set to 0</div>
+
+                        <div class="note-item">• DRY RUN: ClimateAirDistRequest_Floor would be set to 1</div>
+
+                        <div class="note-item">• DRY RUN: ClimateAirDistRequest_Vent would be set to 1</div>
+
+                        <div class="note-item">• DRY RUN: AirRecirculationRequest would be set to 1</div>
+
+                        <div class="note-item">• DRY RUN: HVACBlowerRequest would be set to 1</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Step 2: Verify Pre-Conditions (DRY RUN)</h3>
+                    <span class="step-time">09:59:32.064</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Simulate expected responses to pre-conditions</p>
+
+                    <div class="checks">
+                        <h4>Signal Checks</h4>
+
+                        <div class="check-item passed">
+                            <div class="check-signal">MaxDefrostStatus</div>
+                            <div class="check-expected">Expected: 0 (±0.1)</div>
+                            <div class="check-actual">Actual: 0</div>
+                            <div class="check-status">✓ PASS</div>
+                        </div>
+
+                        <div class="check-item passed">
+                            <div class="check-signal">HVACBlowerLevelStat_BlowerLevel</div>
+                            <div class="check-expected">Expected: 1 (±0.1)</div>
+                            <div class="check-actual">Actual: 1</div>
+                            <div class="check-status">✓ PASS</div>
+                        </div>
+
+                        <div class="check-item passed">
+                            <div class="check-signal">ClimateAirDistStatus_Defrost</div>
+                            <div class="check-expected">Expected: 0 (±0.1)</div>
+                            <div class="check-actual">Actual: 0</div>
+                            <div class="check-status">✓ PASS</div>
+                        </div>
+
+                        <div class="check-item passed">
+                            <div class="check-signal">ClimateAirDistStatus_Floor</div>
+                            <div class="check-expected">Expected: 1 (±0.1)</div>
+                            <div class="check-actual">Actual: 1</div>
+                            <div class="check-status">✓ PASS</div>
+                        </div>
+
+                        <div class="check-item passed">
+                            <div class="check-signal">ClimateAirDistStatus_Vent</div>
+                            <div class="check-expected">Expected: 1 (±0.1)</div>
+                            <div class="check-actual">Actual: 1</div>
+                            <div class="check-status">✓ PASS</div>
+                        </div>
+
+                        <div class="check-item passed">
+                            <div class="check-signal">AirRecirculationStatus</div>
+                            <div class="check-expected">Expected: 1 (±0.1)</div>
+                            <div class="check-actual">Actual: 1</div>
+                            <div class="check-status">✓ PASS</div>
+                        </div>
+
+                        <div class="check-item passed">
+                            <div class="check-signal">ClimatePowerStatus</div>
+                            <div class="check-expected">Expected: 1 (±0.1)</div>
+                            <div class="check-actual">Actual: 1</div>
+                            <div class="check-status">✓ PASS</div>
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• Actual hardware value: 0.0 (not changed in dry run)</div>
+
+                        <div class="note-item">• Actual hardware value: 1.0 (not changed in dry run)</div>
+
+                        <div class="note-item">• Actual hardware value: 0.0 (not changed in dry run)</div>
+
+                        <div class="note-item">• Actual hardware value: 1.0 (not changed in dry run)</div>
+
+                        <div class="note-item">• Actual hardware value: 1.0 (not changed in dry run)</div>
+
+                        <div class="note-item">• Actual hardware value: 0.0 (not changed in dry run)</div>
+
+                        <div class="note-item">• Actual hardware value: 1.0 (not changed in dry run)</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Step 3: Test NotAvailable Handling (DRY RUN)</h3>
+                    <span class="step-time">09:59:32.274</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Show NotAvailable test sequence</p>
+
+                    <div class="sets">
+                        <h4>Signal Sets</h4>
+
+                        <div class="set-item">
+                            <span class="signal">HVACBlowerRequest</span> = 15
+                        </div>
+
+                        <div class="set-item">
+                            <span class="signal">ClimateAirDistRequest_Defrost</span> = 15
+                        </div>
+
+                        <div class="set-item">
+                            <span class="signal">ClimateAirDistRequest_Floor</span> = 15
+                        </div>
+
+                        <div class="set-item">
+                            <span class="signal">ClimateAirDistRequest_Vent</span> = 15
+                        </div>
+
+                        <div class="set-item">
+                            <span class="signal">AirRecirculationRequest</span> = 3
+                        </div>
+
+                        <div class="set-item">
+                            <span class="signal">CabHeatManReq</span> = 15
+                        </div>
+
+                        <div class="set-item">
+                            <span class="signal">ClimatePowerRequest</span> = 1
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• DRY RUN: HVACBlowerRequest would be set to 15</div>
+
+                        <div class="note-item">• DRY RUN: ClimateAirDistRequest_Defrost would be set to 15</div>
+
+                        <div class="note-item">• DRY RUN: ClimateAirDistRequest_Floor would be set to 15</div>
+
+                        <div class="note-item">• DRY RUN: ClimateAirDistRequest_Vent would be set to 15</div>
+
+                        <div class="note-item">• DRY RUN: AirRecirculationRequest would be set to 3</div>
+
+                        <div class="note-item">• DRY RUN: CabHeatManReq would be set to 15</div>
+
+                        <div class="note-item">• DRY RUN: ClimatePowerRequest would be set to 1</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Step 4: Set Cabin Heater (DRY RUN)</h3>
+                    <span class="step-time">09:59:32.478</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Show heater activation</p>
+
+                    <div class="sets">
+                        <h4>Signal Sets</h4>
+
+                        <div class="set-item">
+                            <span class="signal">CabHeatManReq</span> = 1
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• DRY RUN: CabHeatManReq would be set to 1</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Step 5: Verify Heater (DRY RUN)</h3>
+                    <span class="step-time">09:59:32.478</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Simulate heater response</p>
+
+                    <div class="checks">
+                        <h4>Signal Checks</h4>
+
+                        <div class="check-item passed">
+                            <div class="check-signal">CabHeatManStatus</div>
+                            <div class="check-expected">Expected: 1 (±0.1)</div>
+                            <div class="check-actual">Actual: 1</div>
+                            <div class="check-status">✓ PASS</div>
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• Actual hardware value: 10.0 (not changed in dry run)</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Step 6: Activate Max Defrost (DRY RUN)</h3>
+                    <span class="step-time">09:59:32.686</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Show max defrost activation command</p>
+
+                    <div class="sets">
+                        <h4>Signal Sets</h4>
+
+                        <div class="set-item">
+                            <span class="signal">MaxDefrostRequest</span> = 1
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• DRY RUN: MaxDefrostRequest would be set to 1</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Step 7: Wait for Activation (DRY RUN)</h3>
+                    <span class="step-time">09:59:32.686</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Simulate max defrost status response</p>
+
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <h3>Step 8: Verify Effects (DRY RUN)</h3>
+                    <span class="step-time">09:59:33.192</span>
+                </div>
+                <div class="step-body">
+
+                    <p class="step-description">Simulate all expected max defrost responses</p>
+
+                    <div class="checks">
+                        <h4>Signal Checks</h4>
+
+                        <div class="check-item passed">
+                            <div class="check-signal">HVACBlowerLevelStat_BlowerLevel</div>
+                            <div class="check-expected">Expected: 10 (±0.1)</div>
+                            <div class="check-actual">Actual: 10</div>
+                            <div class="check-status">✓ PASS</div>
+                        </div>
+
+                        <div class="check-item passed">
+                            <div class="check-signal">ClimateAirDistStatus_Defrost</div>
+                            <div class="check-expected">Expected: 1 (±0.1)</div>
+                            <div class="check-actual">Actual: 1</div>
+                            <div class="check-status">✓ PASS</div>
+                        </div>
+
+                        <div class="check-item passed">
+                            <div class="check-signal">ClimateAirDistStatus_Vent</div>
+                            <div class="check-expected">Expected: 0 (±0.1)</div>
+                            <div class="check-actual">Actual: 0</div>
+                            <div class="check-status">✓ PASS</div>
+                        </div>
+
+                        <div class="check-item passed">
+                            <div class="check-signal">ClimateAirDistStatus_Floor</div>
+                            <div class="check-expected">Expected: 0 (±0.1)</div>
+                            <div class="check-actual">Actual: 0</div>
+                            <div class="check-status">✓ PASS</div>
+                        </div>
+
+                        <div class="check-item passed">
+                            <div class="check-signal">CabHeatManStatus</div>
+                            <div class="check-expected">Expected: 10 (±0.1)</div>
+                            <div class="check-actual">Actual: 10</div>
+                            <div class="check-status">✓ PASS</div>
+                        </div>
+
+                        <div class="check-item passed">
+                            <div class="check-signal">AirRecirculationStatus</div>
+                            <div class="check-expected">Expected: 0 (±0.1)</div>
+                            <div class="check-actual">Actual: 0</div>
+                            <div class="check-status">✓ PASS</div>
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <h4>Notes</h4>
+
+                        <div class="note-item">• Actual hardware value: 1.0 (not changed in dry run)</div>
+
+                        <div class="note-item">• Actual hardware value: 0.0 (not changed in dry run)</div>
+
+                        <div class="note-item">• Actual hardware value: 1.0 (not changed in dry run)</div>
+
+                        <div class="note-item">• Actual hardware value: 1.0 (not changed in dry run)</div>
+
+                        <div class="note-item">• Actual hardware value: 10.0 (not changed in dry run)</div>
+
+                        <div class="note-item">• Actual hardware value: 0.0 (not changed in dry run)</div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="footer">
+            Generated on 2026-02-11 09:59:33 | 
+            Test started at 2026-02-11 09:59:31 | 
+            Duration: 1.96s
+        </div>
+    </div>
+</body>
+</html>
